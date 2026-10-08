@@ -8,6 +8,8 @@
 
 //わしのクラス
 #include "COMRelease.h"
+#include "BitmapArt.h"
+#include "Utility.h"
 
 
 //DxLibの設定の時に「追加の○○ディレクトリ」的なのを設定していたけれど要はこれみたい
@@ -23,36 +25,33 @@
 //1. 2.とかついてんのはAI、この口調がおれが書いたやつ
 
 COMRelease _componentRelease;
+BitmapArt  _bitmapArt;
 
-//【１】最低限いるやつ　windows側で用意されてるからこっちから実体は作れない（ポインタのみ）
+//【1】最低限いるやつ　windows側で用意されてるからこっちから実体は作れない（ポインタのみ）
 ID2D1Factory* pFactory = nullptr;
 
-//【２】Handle Windowsみたいなこと言ってるからウィンドウ関連
+//【2】Handle Windowsみたいなこと言ってるからウィンドウ関連でこいつはBitmapArtに渡す
 ID2D1HwndRenderTarget* pRenderTarget = nullptr;
 
-//【３】色の描画らしい
-ID2D1SolidColorBrush* pBrush = nullptr;
+//色の描画らしい（未使用なので消した）colorブラシ
 
-//【４】Windows imaging component工場
+//DEL【3】Windows imaging component工場
 IWICImagingFactory* pWICFactory = nullptr;
 
-//【５】デコーダー
+//【4】デコーダー
 IWICBitmapDecoder* pDecoder = nullptr;
 
-//【６】画像ハンドル的な？
+//【5】画像ハンドル的な？
 IWICBitmapFrameDecode* pFrameDecode_testArt = nullptr;
 
-//【７】こんばーたー
+//【6】こんばーたー
 IWICFormatConverter* pConverter = nullptr;
 
-//【８】こいつが画像ハンドルです皆さん！！！！！！！！！！！
+//DEL【7】こいつが画像ハンドルです皆さん！！！！！！！！！！！
 ID2D1Bitmap* pBitmap_testArt = nullptr;
-
-
 
 D2D1_POINT_2F position = { 470.0f, 250.0f };
 D2D1_POINT_2F dir = { 1.0f, 0.0f };
-
 
 //あんしん　おなじみ　だいすき
 const float playerSpeed = 5.0f;
@@ -88,8 +87,7 @@ const static void Render()
 }
 
 
-//まぁね hResult != S_OKでも良いんだけどね、マクロがあるんで
-bool static IsNG(HRESULT hResult) { return FAILED(hResult); }
+
 
 void FatalError(LPCWSTR text = L"")
 {
@@ -173,13 +171,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         D2D1::HwndRenderTargetProperties(hwnd, D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top)),
         &pRenderTarget
     );
+
     if (IsNG(renderTargetCreateResult)) { FatalError(L"renderTarget作成失敗"); }
     _componentRelease.AddReleaseTarget(pRenderTarget);
+    _bitmapArt.Init(pRenderTarget);
 
-    // 5. ブラシの作成（プレイヤー描画用）
-    HRESULT solidColorCreateResult = pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::DodgerBlue), &pBrush);
-    if (IsNG(solidColorCreateResult)) { FatalError(L"solidColor作成失敗"); }
-    _componentRelease.AddReleaseTarget(pBrush);
 
     //引数わかんなすぎてここAiにきいた
     HRESULT coCreateResult = CoCreateInstance(

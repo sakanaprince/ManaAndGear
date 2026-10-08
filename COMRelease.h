@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <vector>
 
+
 /// <summary>
 /// ‚±‚ÌƒNƒ‰ƒX‚ÍŠÄŽ‹‘ÎÛ‚É“ü‚Á‚Ä‚¢‚éCOM‚ð‰ð•ú‚·‚é
 /// COM‚Í‘SˆõŒp³‚µ‚Ä‚¢‚éIUnknown‚ðŠˆ–ô‚µ‚Ä

@@ -63,7 +63,6 @@ void BitmapArt::DrawArt(ArtKeys key, D2D1_POINT_2F _pos)
 		MessageBox(NULL, L"ArtŽæ“¾Ž¸”s", L"", 0);
 		return;
 	}
-
 	
 	if(it->second == nullptr){ MessageBox(NULL, L"NULL‚¶‚á‚Ë", L"", 0); }
 

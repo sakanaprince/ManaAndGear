@@ -32,37 +32,36 @@ void UserUpdate();
 
 namespace ManaAndGear
 {
-//TODO:クラスで隠せ、でなきゃ外部参照されて予測変換邪魔で作業にならない
-//1. 2.とかついてんのはAI、この口調がおれが書いたやつ
-COMRelease _componentRelease;
-BitmapArt  _bitmapArt;
-
-//【1】最低限いるやつ　windows側で用意されてるからこっちから実体は作れない（ポインタのみ）
-ID2D1Factory* pFactory = nullptr;
-
-//【2】Handle Windowsみたいなこと言ってるからウィンドウ関連でこいつはBitmapArtに渡す
-ID2D1HwndRenderTarget* pRenderTarget = nullptr;
-
-//色の描画らしい（未使用なので消した）colorブラシ
-
-//DEL【3】Windows imaging component工場
-IWICImagingFactory* pWICFactory = nullptr;
-
-//【4】デコーダー
-IWICBitmapDecoder* pDecoder = nullptr;
-
-//【5】画像ハンドル的な？
-IWICBitmapFrameDecode* pFrameDecode_testArt = nullptr;
-
-//【6】こんばーたー
-IWICFormatConverter* pConverter = nullptr;
-
-//DEL【7】こいつが画像ハンドルです皆さん！！！！！！！！！！！
-ID2D1Bitmap* pBitmap_testArt = nullptr;
-
-D2D1_POINT_2F position = { 470.0f, 250.0f };
-D2D1_POINT_2F dir = { 1.0f, 0.0f };
-
+    //TODO:クラスで隠せ、でなきゃ外部参照されて予測変換邪魔で作業にならない
+    //1. 2.とかついてんのはAI、この口調がおれが書いたやつ
+    COMRelease _componentRelease;
+    BitmapArt  _bitmapArt;
+    
+    //【1】最低限いるやつ　windows側で用意されてるからこっちから実体は作れない（ポインタのみ）
+    ID2D1Factory* pFactory = nullptr;
+    
+    //【2】Handle Windowsみたいなこと言ってるからウィンドウ関連でこいつはBitmapArtに渡す
+    ID2D1HwndRenderTarget* pRenderTarget = nullptr;
+    
+    //色の描画らしい（未使用なので消した）colorブラシ
+    
+    //DEL【3】Windows imaging component工場
+    IWICImagingFactory* pWICFactory = nullptr;
+    
+    //【4】デコーダー
+    IWICBitmapDecoder* pDecoder = nullptr;
+    
+    //【5】画像ハンドル的な？
+    IWICBitmapFrameDecode* pFrameDecode_testArt = nullptr;
+    
+    //【6】こんばーたー
+    IWICFormatConverter* pConverter = nullptr;
+    
+    //DEL【7】こいつが画像ハンドルです皆さん！！！！！！！！！！！
+    ID2D1Bitmap* pBitmap_testArt = nullptr;
+    
+    D2D1_POINT_2F position = { 470.0f, 250.0f };
+    D2D1_POINT_2F dir = { 1.0f, 0.0f };
 }
 
 using namespace ManaAndGear;
@@ -94,17 +93,12 @@ const static void Render()
         position.x + artSize.width,
         position.y + artSize.height);
 
-    pRenderTarget->DrawBitmap(pBitmap_testArt, drawTargetRect, 1.0f);
+    //pRenderTarget->DrawBitmap(pBitmap_testArt, drawTargetRect, 1.0f);
 
-    //_bitmapArt.DrawArt(ArtKeys::ArtNumber1, { 300,300 });
+    _bitmapArt.DrawArt(ArtKeys::ArtNumber1, {100,50});
 
     //Beginで始まるEndで終わる
     pRenderTarget->EndDraw();
-}
-
-const static void RenderSmart()
-{
-    _bitmapArt.DrawArt(ArtKeys::ArtNumber1, position);
 }
 
 // ウィンドウプロシージャ
@@ -186,8 +180,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
     if (IsNG(renderTargetCreateResult)) { FatalError(L"renderTarget作成失敗"); }
     _componentRelease.AddReleaseTarget(pRenderTarget);
-    _bitmapArt.Init(pRenderTarget, pWICFactory);
-
 
     //引数わかんなすぎてここAiにきいた
     HRESULT coCreateResult = CoCreateInstance(
@@ -255,8 +247,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     MSG msg = {};
 
     _bitmapArt.Init(pRenderTarget, pWICFactory);
-    //_bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test3.png");
-    //_bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test2.png");
 
     UserInit();
     UserStart();
@@ -300,10 +290,18 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         //    if (GetAsyncKeyState('W')) { position.y -= playerSpeed; }
         //    if (GetAsyncKeyState('S')) { position.y += playerSpeed; }
         //}
+        if (pRenderTarget)
+        {
+            pRenderTarget->BeginDraw();
+            pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::DarkSlateGray));
+        }
+        UserUpdate();
 
-       // UserUpdate();
+        HRESULT renderResult = pRenderTarget->EndDraw();
+        if (IsNG(renderResult)) { FatalError(L"EndDraw失敗"); }
+
         // 毎フレーム描画
-        Render();
+        //Render();
     }
 
     // 7. リソースの解放(COMReleaseデストラクタで自動で行われる)

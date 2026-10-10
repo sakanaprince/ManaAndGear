@@ -1,70 +1,28 @@
 #pragma once
-#include <unordered_map>
-
 #include <d2d1.h>
-#include <wincodec.h>
+#include <windows.h>
+#include <unordered_map>
 #include "ArtKeys.h"
+
+class IWICImagingFactory;
 
 class BitmapArt
 {
 private:
-	ID2D1RenderTarget* pRenderTarget {nullptr};
-	std::unordered_map<ArtKeys, ID2D1Bitmap*> pArtMapEnumType;
+	ID2D1RenderTarget* _pRenderTarget {nullptr};
+	IWICImagingFactory* _pWICImagingFactory{ nullptr };
+	std::unordered_map<ArtKeys, ID2D1Bitmap*> _pArtMapEnumType;
 
 public:
-	~BitmapArt()
-	{
-		AllArtRelease();
-	}
+	~BitmapArt() { AllArtRelease(); }
 
-	void Init(ID2D1RenderTarget* renderTargetPointer)
-	{
-		pRenderTarget = renderTargetPointer;
-		ID2D1Bitmap* aaa;
-	}
+	void Init(ID2D1RenderTarget* renderTargetPointer, IWICImagingFactory* WICImagingFactoryPointer);
 
-	void LoadArt(ArtKeys artKey, LPCWSTR path)
-	{
-		//同じキーを上書きしようとしたら
-		auto it = pArtMapEnumType.find(artKey);
+	void LoadArt(ArtKeys artKey, LPCWSTR path);
 
-		if (it != pArtMapEnumType.end())
-		{
-			MessageBox(NULL, L"artKey(ここに番号を入れる)を上書きする！元登録されていた画像は消えた。", L"", 0);
-		}
+	void DrawArt(ArtKeys key, D2D1_POINT_2F _pos);
 
-	
-
-	}
-
-	ID2D1Bitmap* GetArt(ArtKeys key)
-	{
-		auto it = pArtMapEnumType.find(key);
-
-		if (it == pArtMapEnumType.end()) 
-		{
-			MessageBox(NULL, L"Art取得失敗", L"", 0);
-			return nullptr;
-		}
-
-		return it->second;
-	}
-
-	void AllArtRelease()
-	{
-		//ポインタを指してるオブジェクト参照　をリリースってこと？
-		for (auto& obj : pArtMapEnumType)
-		{
-			if (obj.second)
-			{
-				obj.second->Release();
-				obj.second = nullptr;
-			}
-		}
-
-		pArtMapEnumType.clear();
-		MessageBox(NULL, L"アート解放した", L"", 1);
-	}
+	void AllArtRelease();
  
 };
 

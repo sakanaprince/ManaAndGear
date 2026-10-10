@@ -16,18 +16,16 @@
 //ライブラリディレクトリとインクルードディレクトリは別物でした...DxLibはコード内でpragma commmentしてくれてる
 //自分のプロジェクトファイル内に存在しないクラスを使おうとしている時に必要らしい
 
-
 //【外部のライブラリを使用】
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "windowscodecs.lib")
 
-
+//TODO:クラスで隠せ、でなきゃ外部参照されて予測変換邪魔で作業にならない
 //1. 2.とかついてんのはAI、この口調がおれが書いたやつ
-
 COMRelease _componentRelease;
 BitmapArt  _bitmapArt;
 
-//【1】最低限いるやつ　windows側で用意されてるからこっちから実体は作れない（ポインタのみ）
+ //【1】最低限いるやつ　windows側で用意されてるからこっちから実体は作れない（ポインタのみ）
 ID2D1Factory* pFactory = nullptr;
 
 //【2】Handle Windowsみたいなこと言ってるからウィンドウ関連でこいつはBitmapArtに渡す
@@ -52,6 +50,7 @@ ID2D1Bitmap* pBitmap_testArt = nullptr;
 
 D2D1_POINT_2F position = { 470.0f, 250.0f };
 D2D1_POINT_2F dir = { 1.0f, 0.0f };
+
 
 //あんしん　おなじみ　だいすき
 const float playerSpeed = 5.0f;
@@ -82,20 +81,16 @@ const static void Render()
 
     pRenderTarget->DrawBitmap(pBitmap_testArt, drawTargetRect, 1.0f);
 
+    _bitmapArt.DrawArt(ArtKeys::ArtNumber1, { 300,300 });
+
     //Beginで始まるEndで終わる
     pRenderTarget->EndDraw();
 }
 
-
-
-
-void FatalError(LPCWSTR text = L"")
+const static void RenderSmart()
 {
-    MessageBox(NULL, text, L"", 0);
-    exit(-1);
+    _bitmapArt.DrawArt(ArtKeys::ArtNumber1, position);
 }
-  
-
 
 // ウィンドウプロシージャ
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -139,6 +134,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, factoryOptions, &pFactory);
     _componentRelease.AddReleaseTarget(pFactory);
 
+    using namespace Util;
+
     //コンポーネント初期化（1引数にはNULLを送れだとよ...公式がそういった。まるちすれっどの方が得そうなので選択)
     //追記　まるちすれっど危ないみたい
     HRESULT coInitializeResult = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
@@ -174,7 +171,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
     if (IsNG(renderTargetCreateResult)) { FatalError(L"renderTarget作成失敗"); }
     _componentRelease.AddReleaseTarget(pRenderTarget);
-    _bitmapArt.Init(pRenderTarget);
+    _bitmapArt.Init(pRenderTarget,pWICFactory);
 
 
     //引数わかんなすぎてここAiにきいた
@@ -190,9 +187,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
  
     /*
     1=>見たまま
-    2=>おすすめ無し
-    3=>読み込むために使うという意志表明
-    4=>はぁ？
+    2=>識別子はおすすめに任せ
+    3=>読み込むために使うという意志表明(読み取り専用)
+    4=>どのタイミングでキャッシュをするか
     5=>デコーダーのポインタのアドレスを求められている(**ともいえる)
     */
     HRESULT decoderCreateResult =  pWICFactory->CreateDecoderFromFilename(L"./Data/Image/test2.png",
@@ -243,6 +240,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     //MSG構造体にはウィンドウ、メッセージ、時間、マウス座標まで入ってる。
     MSG msg = {};
 
+    _bitmapArt.Init(pRenderTarget, pWICFactory);
+    _bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test3.png");
+    //_bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test2.png");
+
     while (msg.message != WM_QUIT) 
     {
          //実行ファイルがメッセージを受け取るために PeekMessageを使い、溜まっているメッセージを処理させる
@@ -278,6 +279,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
                  position.x = 0.0f;
                  dir.x = dir.x * -1.0f;
              }
+
+             //公式サイト見たら分かるけどA~Zは大文字かつシングルクオーテーションで囲まないと使えない
+             if (GetAsyncKeyState('W')) { position.y -= playerSpeed; }
+             if (GetAsyncKeyState('S')) { position.y += playerSpeed; }
          }
 
          // 毎フレーム描画

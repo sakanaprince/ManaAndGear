@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SakanaDefenseCpp", "SakanaDefenseCpp.vcxproj", "{D2A0649E-EF18-487A-BF4C-A85F239393E5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ManaAndGear", "ManaAndGear.vcxproj", "{D2A0649E-EF18-487A-BF4C-A85F239393E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

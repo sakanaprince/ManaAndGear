@@ -233,7 +233,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     //SetWindowPos(hwnd, nullptr, 0, 0, SCREEN_Width, SCREEN_Height, SHOW_FULLSCREEN);
 
     //NO MOVEとしてるので座標位置設定が機能しなくなるので固定直前に位置を設定しておく作戦
-    //大きさはここで上書きするので前の行はふざけている()
     //SetWindowPos(hwnd, nullptr, 0, 0, SCREEN_Width, SCREEN_Height, SWP_NOMOVE);
 
     // 6. メッセージループ（ゲームループ）

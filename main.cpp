@@ -8,47 +8,45 @@
 
 //わしのクラス
 #include "COMRelease.h"
+#include "BitmapArt.h"
+#include "Utility.h"
 
 
 //DxLibの設定の時に「追加の○○ディレクトリ」的なのを設定していたけれど要はこれみたい
 //ライブラリディレクトリとインクルードディレクトリは別物でした...DxLibはコード内でpragma commmentしてくれてる
 //自分のプロジェクトファイル内に存在しないクラスを使おうとしている時に必要らしい
 
-
 //【外部のライブラリを使用】
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "windowscodecs.lib")
 
-
+//TODO:クラスで隠せ、でなきゃ外部参照されて予測変換邪魔で作業にならない
 //1. 2.とかついてんのはAI、この口調がおれが書いたやつ
-
 COMRelease _componentRelease;
+BitmapArt  _bitmapArt;
 
-//【１】最低限いるやつ　windows側で用意されてるからこっちから実体は作れない（ポインタのみ）
+ //【1】最低限いるやつ　windows側で用意されてるからこっちから実体は作れない（ポインタのみ）
 ID2D1Factory* pFactory = nullptr;
 
-//【２】Handle Windowsみたいなこと言ってるからウィンドウ関連
+//【2】Handle Windowsみたいなこと言ってるからウィンドウ関連でこいつはBitmapArtに渡す
 ID2D1HwndRenderTarget* pRenderTarget = nullptr;
 
-//【３】色の描画らしい
-ID2D1SolidColorBrush* pBrush = nullptr;
+//色の描画らしい（未使用なので消した）colorブラシ
 
-//【４】Windows imaging component工場
+//DEL【3】Windows imaging component工場
 IWICImagingFactory* pWICFactory = nullptr;
 
-//【５】デコーダー
+//【4】デコーダー
 IWICBitmapDecoder* pDecoder = nullptr;
 
-//【６】画像ハンドル的な？
+//【5】画像ハンドル的な？
 IWICBitmapFrameDecode* pFrameDecode_testArt = nullptr;
 
-//【７】こんばーたー
+//【6】こんばーたー
 IWICFormatConverter* pConverter = nullptr;
 
-//【８】こいつが画像ハンドルです皆さん！！！！！！！！！！！
+//DEL【7】こいつが画像ハンドルです皆さん！！！！！！！！！！！
 ID2D1Bitmap* pBitmap_testArt = nullptr;
-
-
 
 D2D1_POINT_2F position = { 470.0f, 250.0f };
 D2D1_POINT_2F dir = { 1.0f, 0.0f };
@@ -83,21 +81,16 @@ const static void Render()
 
     pRenderTarget->DrawBitmap(pBitmap_testArt, drawTargetRect, 1.0f);
 
+    _bitmapArt.DrawArt(ArtKeys::ArtNumber1, { 300,300 });
+
     //Beginで始まるEndで終わる
     pRenderTarget->EndDraw();
 }
 
-
-//まぁね hResult != S_OKでも良いんだけどね、マクロがあるんで
-bool static IsNG(HRESULT hResult) { return FAILED(hResult); }
-
-void FatalError(LPCWSTR text = L"")
+const static void RenderSmart()
 {
-    MessageBox(NULL, text, L"", 0);
-    exit(-1);
+    _bitmapArt.DrawArt(ArtKeys::ArtNumber1, position);
 }
-  
-
 
 // ウィンドウプロシージャ
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -141,6 +134,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, factoryOptions, &pFactory);
     _componentRelease.AddReleaseTarget(pFactory);
 
+    using namespace Util;
+
     //コンポーネント初期化（1引数にはNULLを送れだとよ...公式がそういった。まるちすれっどの方が得そうなので選択)
     //追記　まるちすれっど危ないみたい
     HRESULT coInitializeResult = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
@@ -173,13 +168,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         D2D1::HwndRenderTargetProperties(hwnd, D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top)),
         &pRenderTarget
     );
+
     if (IsNG(renderTargetCreateResult)) { FatalError(L"renderTarget作成失敗"); }
     _componentRelease.AddReleaseTarget(pRenderTarget);
+    _bitmapArt.Init(pRenderTarget,pWICFactory);
 
-    // 5. ブラシの作成（プレイヤー描画用）
-    HRESULT solidColorCreateResult = pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::DodgerBlue), &pBrush);
-    if (IsNG(solidColorCreateResult)) { FatalError(L"solidColor作成失敗"); }
-    _componentRelease.AddReleaseTarget(pBrush);
 
     //引数わかんなすぎてここAiにきいた
     HRESULT coCreateResult = CoCreateInstance(
@@ -194,9 +187,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
  
     /*
     1=>見たまま
-    2=>おすすめ無し
-    3=>読み込むために使うという意志表明
-    4=>はぁ？
+    2=>識別子はおすすめに任せ
+    3=>読み込むために使うという意志表明(読み取り専用)
+    4=>どのタイミングでキャッシュをするか
     5=>デコーダーのポインタのアドレスを求められている(**ともいえる)
     */
     HRESULT decoderCreateResult =  pWICFactory->CreateDecoderFromFilename(L"./Data/Image/test2.png",
@@ -240,12 +233,15 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     //SetWindowPos(hwnd, nullptr, 0, 0, SCREEN_Width, SCREEN_Height, SHOW_FULLSCREEN);
 
     //NO MOVEとしてるので座標位置設定が機能しなくなるので固定直前に位置を設定しておく作戦
-    //大きさはここで上書きするので前の行はふざけている()
     //SetWindowPos(hwnd, nullptr, 0, 0, SCREEN_Width, SCREEN_Height, SWP_NOMOVE);
 
     // 6. メッセージループ（ゲームループ）
     //MSG構造体にはウィンドウ、メッセージ、時間、マウス座標まで入ってる。
     MSG msg = {};
+
+    _bitmapArt.Init(pRenderTarget, pWICFactory);
+    _bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test3.png");
+    //_bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test2.png");
 
     while (msg.message != WM_QUIT) 
     {
@@ -282,6 +278,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
                  position.x = 0.0f;
                  dir.x = dir.x * -1.0f;
              }
+
+             //公式サイト見たら分かるけどA~Zは大文字かつシングルクオーテーションで囲まないと使えない
+             if (GetAsyncKeyState('W')) { position.y -= playerSpeed; }
+             if (GetAsyncKeyState('S')) { position.y += playerSpeed; }
          }
 
          // 毎フレーム描画

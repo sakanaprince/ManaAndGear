@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <vector>
 
+
 /// <summary>
 /// このクラスは監視対象に入っているCOMを解放する
 /// COMは全員継承しているIUnknownを活躍して
@@ -12,7 +13,6 @@ class COMRelease
 private:
 	//COM（コンポーネントオブジェクトモデル）は全員IUnknown抽象クラスを継承しとる,これで上手く全開放出来る説
 	std::vector<IUnknown*> releaseTargets;
-
 
 public:
 	~COMRelease()

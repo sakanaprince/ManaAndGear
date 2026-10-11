@@ -11,7 +11,8 @@
 #include "COMRelease.h"
 #include "BitmapArt.h"
 #include "Utility.h"
-
+#include "Transform.h"
+#include "GameObjcet.h"
 
 //DxLibの設定の時に「追加の○○ディレクトリ」的なのを設定していたけれど要はこれみたい
 //ライブラリディレクトリとインクルードディレクトリは別物でした...DxLibはコード内でpragma commmentしてくれてる

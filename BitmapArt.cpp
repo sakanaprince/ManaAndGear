@@ -49,6 +49,9 @@ void BitmapArt::LoadArt(ArtKeys artKey, LPCWSTR path)
 		pFormatConverter, nullptr, &_pArtMapEnumType[artKey]);
 	if (Util::IsNG(bitMapCreateResult)) { Util::FatalError(L"bitMapì¬Ž¸”s"); }
 
+	pFormatConverter->Release();
+	pFrameDecode->Release();
+	pBitmapDecoder->Release();
 }
 
 void BitmapArt::DrawArt(ArtKeys key, D2D1_POINT_2F _pos)
@@ -60,6 +63,8 @@ void BitmapArt::DrawArt(ArtKeys key, D2D1_POINT_2F _pos)
 		MessageBox(NULL, L"ArtŽæ“¾Ž¸”s", L"", 0);
 		return;
 	}
+	
+	if(it->second == nullptr){ MessageBox(NULL, L"NULL‚¶‚á‚Ë", L"", 0); }
 
 	D2D1_SIZE_F artSize = it->second->GetSize();
 

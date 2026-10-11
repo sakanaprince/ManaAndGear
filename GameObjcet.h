@@ -10,7 +10,13 @@ private:
 	BitmapArt* _pBitmapArt{ nullptr };
 
 public:
-	Transform::Position position;
+	GameObject() = default;
+	GameObject(float _x, float _y) : transform(_x, _y) {};
+
+
+	//’¼Š´“I‚ÉŽg‚¦‚é‚æ‚¤‚É‚ ‚¦‚Äpublic‚É‚µ‚Ä‚¢‚éposition
+	Transform transform;
+
 
 	void BindBitmapArt(BitmapArt* bitmapArt) { _pBitmapArt = bitmapArt; }
 
@@ -19,7 +25,8 @@ public:
 	/// </summary>
 	/// <param name="artKey"></param>
 	/// <param name="position"></param>
-	void Draw(ArtKeys artKey, Transform::Position position);
+	void Draw(ArtKeys artKey, Transform::Position setPosition);
+	void Draw(ArtKeys artKey);
 	
 	
 	

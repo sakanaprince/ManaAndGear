@@ -1,29 +1,22 @@
 #include "ManaAndGear.h"
 
-POINT mousePos{};
-GameObject player;
-
-Transform::Position pos{ 1, 1 };
+GameObject player{200,350};
+int waitTime = 0;
 
 World_WakeUp
 {
-ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test.png");
-player.BindBitmapArt(&ManaAndGear::_bitmapArt);
+	ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test2.png");
+	player.BindBitmapArt(&ManaAndGear::_bitmapArt);
 }
 
 World_Start{}
 
 World_Update
 {
-GetCursorPos(&mousePos);
+	player.Draw(ArtKeys::ArtNumber1);
 
-ManaAndGear::_bitmapArt.DrawArt(ArtKeys::ArtNumber1, 
-	{static_cast<float>(player.position.x), static_cast<float>(player.position.y) });
+	waitTime++;
+	if (waitTime < 60) { return; }
 
-Transform::Position mouseCastPos{ 
-	static_cast<float>(mousePos.x), 
-	static_cast<float>(mousePos.y) };
-
-player.Draw(ArtKeys::ArtNumber1, 
-	mouseCastPos);
+	player.transform.position.y -= 0.9f;
 }

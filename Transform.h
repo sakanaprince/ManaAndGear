@@ -4,6 +4,9 @@
 
 struct Transform
 {
+	Transform() = default;
+
+
 	struct Position
 	{
 		float x{ 0.0f };
@@ -28,4 +31,7 @@ struct Transform
 			//return (static_cast<LONG>(x), static_cast<LONG>(y));
 		}
 	};
+
+	Position position{};
+	Transform(float _x, float _y) :position(_x, _y) {};
 };

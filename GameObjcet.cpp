@@ -27,5 +27,31 @@ void GameObject::Draw(ArtKeys artKey)
 	}
 
 	_pBitmapArt->DrawArt(artKey, transform.position);
+}
 
+bool GameObject::IsHitBox(HitBox otherHitBox) const
+{
+	//AABB
+	bool X_Hit = false;
+
+	if (hitBox.leftTopPosition.x < otherHitBox.leftTopPosition.x
+		&& hitBox.rightBottomPosition.x < hitBox.leftTopPosition.x)
+	{
+		X_Hit = true;
+	}
+	else
+	{
+		//–³‘Ê‚ÈŒvŽZ‚ðÈ‚­‚½‚ß‚É‘Šúreturn
+		return false;
+	}
+
+	bool Y_Hit = false;
+
+	if (hitBox.leftTopPosition.y < otherHitBox.leftTopPosition.y
+		&& hitBox.rightBottomPosition.y < hitBox.leftTopPosition.y)
+	{
+		Y_Hit = true;
+	}
+	
+	return X_Hit && Y_Hit;
 }

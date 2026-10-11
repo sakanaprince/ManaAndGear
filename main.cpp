@@ -1,12 +1,16 @@
 #include "ManaAndGear.h"
 
 GameObject player{200,350};
+GameObject enemy{ 200, 0 };
 int waitTime = 0;
 
 World_WakeUp
 {
 	ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test2.png");
 	player.BindBitmapArt(&ManaAndGear::_bitmapArt);
+	enemy.BindBitmapArt(&ManaAndGear::_bitmapArt);
+
+
 }
 
 World_Start{}
@@ -19,4 +23,6 @@ World_Update
 	if (waitTime < 60) { return; }
 
 	player.transform.position.y -= 0.9f;
+	Transform::Position offset{ 20.0f, 20.0f };
+	player.hitBox = { player.transform.position, player.transform.position + offset };
 }

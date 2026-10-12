@@ -22,6 +22,7 @@
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "windowscodecs.lib")
 
+
 #define World_WakeUp  void UserInit()
 #define World_Start  void UserStart()
 #define World_Update void UserUpdate()
@@ -248,6 +249,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     MSG msg = {};
 
     _bitmapArt.Init(pRenderTarget, pWICFactory);
+    GameObject::BindBitMapArt(&_bitmapArt);
 
     UserInit();
     UserStart();

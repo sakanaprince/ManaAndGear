@@ -2,11 +2,11 @@
 #include "BitmapArt.h"
 #include "Utility.h"
 
-void GameObject::Draw(ArtKeys artKey, Transform::Position setPosition)
+void GameObject::Draw(ArtKeys artKey, Transform::Position setPosition) const
 {
 	if (_pBitmapArt == nullptr)
 	{
-		Util::FatalError(L"初期化を忘れている！Bind関数をはじめに呼んで！");
+		Util::FatalError(L"pBitmapArtがnullptrだBind関数が呼ばれていないかも\nライブラリの不具合です。ごめんなさい。");
 		return;
 	}
 
@@ -18,28 +18,28 @@ void GameObject::Draw(ArtKeys artKey, Transform::Position setPosition)
 	//自力解決！完成しているpBitmapArtのポインタを受け取ればそれを使える
 }
 
-void GameObject::Draw(ArtKeys artKey)
+void GameObject::Draw(ArtKeys artKey) const
 {
 	if (_pBitmapArt == nullptr)
 	{
-		Util::FatalError(L"初期化を忘れている！Bind関数をはじめに呼んで！");
+		Util::FatalError(L"pBitmapArtがnullptrだBind関数が呼ばれていないかも\nライブラリの不具合です。ごめんなさい。");
 		return;
 	}
-
-	
 
 	_pBitmapArt->DrawArt(artKey, transform.position);
 }
 
-void GameObject::DrawHitBox() const
+void const GameObject::DrawHitBox() const
 {
-	_pBitmapArt->DrawHitBox(hitBox.leftTopPosition, hitBox.rightBottomPosition);
+	_pBitmapArt->DrawHitBoxBrush(hitBox.leftTopPosition, hitBox.rightBottomPosition);
 }
+
 
 void GameObject::DrawHitBox(const Transform::Position& leftTopPos, const Transform::Position& rightBottomPos) const
 {
-	_pBitmapArt->DrawHitBox(leftTopPos, rightBottomPos);
+	_pBitmapArt->DrawHitBoxBrush(leftTopPos, rightBottomPos);
 }
+
 
 
 

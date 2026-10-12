@@ -23,7 +23,7 @@ public:
 
 	void DrawArt(ArtKeys key, D2D1_POINT_2F _pos);
 
-	void DrawHitBox(const Transform::Position& leftTop, const Transform::Position& rightBottom)const;
+	void DrawHitBoxBrush(const Transform::Position& leftTop, const Transform::Position& rightBottom)const;
 
 	D2D1_SIZE_F GetArtSize(ArtKeys artkey);
 

@@ -71,7 +71,7 @@ void BitmapArt::DrawArt(ArtKeys key, D2D1_POINT_2F _pos)
 	_pRenderTarget->DrawBitmap(it->second, drawTargetRect, 1.0f);
 }
 
-void BitmapArt::DrawHitBox(const Transform::Position& leftTop, const Transform::Position& rightBottom) const
+void BitmapArt::DrawHitBoxBrush(const Transform::Position& leftTop, const Transform::Position& rightBottom) const
 {
 	ID2D1SolidColorBrush* pColorBrush{ nullptr };
 

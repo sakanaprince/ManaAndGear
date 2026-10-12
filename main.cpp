@@ -1,29 +1,41 @@
 #include "ManaAndGear.h"
 
-POINT mousePos{};
-GameObject player;
+Transform::Position PLAYER_INIT_POS{200,400};
 
-Transform::Position pos{ 1, 1 };
-
+GameObject player{200,400};
+GameObject enemy{ 128, 0 };
+int waitTime = 0;
+float speed{ 0.0f };
 World_WakeUp
 {
-ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test.png");
-player.BindBitmapArt(&ManaAndGear::_bitmapArt);
+	ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test2.png");
+	ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber2, L"./Data/Image/Ammonite.png");
 }
 
 World_Start{}
 
 World_Update
 {
-GetCursorPos(&mousePos);
+	player.Draw(ArtKeys::ArtNumber1);
+	enemy.Draw(ArtKeys::ArtNumber2);
 
-ManaAndGear::_bitmapArt.DrawArt(ArtKeys::ArtNumber1, 
-	{static_cast<float>(player.position.x), static_cast<float>(player.position.y) });
+	auto playerArtSize = _bitmapArt.GetArtSize(ArtKeys::ArtNumber1);
+	Transform::Position offset = { playerArtSize.width, playerArtSize.height };
+	player.hitBox = { player.transform.position, player.transform.position + offset };
 
-Transform::Position mouseCastPos{ 
-	static_cast<float>(mousePos.x), 
-	static_cast<float>(mousePos.y) };
+	auto enemyArtSize = _bitmapArt.GetArtSize(ArtKeys::ArtNumber2);
+	Transform::Position enHitOffset = { enemyArtSize.width,enemyArtSize.height };
+	enemy.hitBox = { enemy.transform.position, enemy.transform.position + enHitOffset };
+	enemy.DrawHitBox();
 
-player.Draw(ArtKeys::ArtNumber1, 
-	mouseCastPos);
+	speed +=  0.01f;
+
+	if (speed > 30.0f) { speed = 30.0f; }
+
+	player.transform.position.y -= speed;
+
+	if (player.IsHit_BoxBox(enemy.hitBox))
+	{
+		player.transform.position = PLAYER_INIT_POS;
+	}
 }

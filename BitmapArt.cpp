@@ -21,13 +21,12 @@ void BitmapArt::LoadArt(ArtKeys artKey, LPCWSTR path)
 
 	HRESULT createDecoderResult = _pWICImagingFactory->CreateDecoderFromFilename(path, nullptr, GENERIC_READ,
 		WICDecodeMetadataCacheOnLoad, &pBitmapDecoder);
-	if (Util::IsNG(createDecoderResult)) { Util::FatalError(L"ƒfƒR[ƒh‚Å‚«‚ñ‚©‚Á‚½"); }
-
+	if (Util::IsNG(createDecoderResult)) { Util::FatalError(L"BitmapArt:ƒfƒR[ƒh‚Å‚«‚ñ‚©‚Á‚½"); }
 
 	IWICBitmapFrameDecode* pFrameDecode = nullptr;
 
 	HRESULT getFrameResult = pBitmapDecoder->GetFrame(0, &pFrameDecode);
-	if (Util::IsNG(getFrameResult)) { Util::FatalError(L"ƒtƒŒ[ƒ€Žæ“¾o—ˆ‚È‚©‚Á‚½"); }
+	if (Util::IsNG(getFrameResult)) { Util::FatalError(L"BitmapArt:ƒtƒŒ[ƒ€Žæ“¾o—ˆ‚È‚©‚Á‚½"); }
 
 	//y‚Í‚ŸzÌ‚Ì‘‚«•û‚àŽŽ‚µ‚Ä**‚É‚µ‚½‚¯‚ÇŒx‚ª
 	IWICFormatConverter* pFormatConverter = nullptr;
@@ -43,11 +42,9 @@ void BitmapArt::LoadArt(ArtKeys artKey, LPCWSTR path)
 		GUID_WICPixelFormat32bppPBGRA,
 		WICBitmapDitherTypeNone, nullptr, 0.0f, WICBitmapPaletteTypeMedianCut);
 	
-
-
 	HRESULT bitMapCreateResult = _pRenderTarget->CreateBitmapFromWicBitmap(
 		pFormatConverter, nullptr, &_pArtMapEnumType[artKey]);
-	if (Util::IsNG(bitMapCreateResult)) { Util::FatalError(L"bitMapì¬Ž¸”s"); }
+	if (Util::IsNG(bitMapCreateResult)) { Util::FatalError(L"BitmapArt:bitMapì¬Ž¸”s"); }
 
 	pFormatConverter->Release();
 	pFrameDecode->Release();
@@ -73,6 +70,43 @@ void BitmapArt::DrawArt(ArtKeys key, D2D1_POINT_2F _pos)
 
 	_pRenderTarget->DrawBitmap(it->second, drawTargetRect, 1.0f);
 }
+
+void BitmapArt::DrawHitBox(const Transform::Position& leftTop, const Transform::Position& rightBottom) const
+{
+	ID2D1SolidColorBrush* pColorBrush{ nullptr };
+
+	HRESULT createResult = _pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(0.9f, 0.2f, 0.2f), &pColorBrush);
+
+	if (Util::IsNG(createResult)) { Util::FatalError(L"BitMapArt‚ÌcolorBrushì¬Ž¸”s"); }
+
+	if (pColorBrush)
+	{
+		//LEFT TOP RIGHT BOTTOM‚Ì‡‚Å‚·
+		D2D1_RECT_F rect = { leftTop.x,leftTop.y,rightBottom.x,rightBottom.y };
+		_pRenderTarget->DrawRectangle(rect, pColorBrush,5.0f);
+
+		pColorBrush->Release();
+		pColorBrush = nullptr;
+	}
+
+
+}
+
+D2D1_SIZE_F BitmapArt::GetArtSize(ArtKeys artkey)
+{
+	auto it = _pArtMapEnumType.find(artkey);
+
+	if (it == _pArtMapEnumType.end())
+	{
+		MessageBox(NULL, L"ArtŽæ“¾Ž¸”s(æ‚ÉLoadArt‚Å“o˜^‚µ‚È‚¢‚Æ...)", L"", 0);
+		return {0,0};
+	}
+
+	return it->second->GetSize();
+}
+
+
+
 
 void BitmapArt::AllArtRelease()
 {

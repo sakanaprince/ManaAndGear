@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <unordered_map>
 #include "ArtKeys.h"
+#include "Transform.h"
 
 class IWICImagingFactory;
 
@@ -21,6 +22,10 @@ public:
 	void LoadArt(ArtKeys artKey, LPCWSTR path);
 
 	void DrawArt(ArtKeys key, D2D1_POINT_2F _pos);
+
+	void DrawHitBox(const Transform::Position& leftTop, const Transform::Position& rightBottom)const;
+
+	D2D1_SIZE_F GetArtSize(ArtKeys artkey);
 
 	void AllArtRelease();
  

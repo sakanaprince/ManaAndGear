@@ -31,7 +31,24 @@ public:
 	void Draw(ArtKeys artKey);
 
 
-	bool IsHitBox(HitBox otherHitBox) const;
+	/// <summary>
+	/// このGameObjectが持っている"四角の当たり判定"を描画
+	/// </summary>
+	void DrawHitBox()const;
+
+	/// <summary>
+	/// 指定された値で"四角の当たり判定"を描画
+	/// </summary>
+	/// <param name="leftTopPos">四角の左上の場所</param>
+	/// <param name="rightBottomPos">四角の右下の場所</param>
+	void DrawHitBox(const Transform::Position& leftTopPos, const Transform::Position& rightBottomPos)const;
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="otherHitBox"></param>
+	/// <returns>当たったらtrue、当たらなかったらfalseになります</returns>
+	bool IsHit_BoxBox(HitBox otherHitBox) const;
 	
 	
 	

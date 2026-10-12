@@ -26,16 +26,30 @@ void GameObject::Draw(ArtKeys artKey)
 		return;
 	}
 
+	
+
 	_pBitmapArt->DrawArt(artKey, transform.position);
 }
 
-bool GameObject::IsHitBox(HitBox otherHitBox) const
+void GameObject::DrawHitBox() const
+{
+	_pBitmapArt->DrawHitBox(hitBox.leftTopPosition, hitBox.rightBottomPosition);
+}
+
+void GameObject::DrawHitBox(const Transform::Position& leftTopPos, const Transform::Position& rightBottomPos) const
+{
+	_pBitmapArt->DrawHitBox(leftTopPos, rightBottomPos);
+}
+
+
+
+bool GameObject::IsHit_BoxBox(HitBox otherHitBox) const
 {
 	//AABB
 	bool X_Hit = false;
 
-	if (hitBox.leftTopPosition.x < otherHitBox.leftTopPosition.x
-		&& hitBox.rightBottomPosition.x < hitBox.leftTopPosition.x)
+	if (hitBox.leftTopPosition.x <= otherHitBox.rightBottomPosition.x
+		&& hitBox.rightBottomPosition.x >= otherHitBox.leftTopPosition.x)
 	{
 		X_Hit = true;
 	}
@@ -47,8 +61,8 @@ bool GameObject::IsHitBox(HitBox otherHitBox) const
 
 	bool Y_Hit = false;
 
-	if (hitBox.leftTopPosition.y < otherHitBox.leftTopPosition.y
-		&& hitBox.rightBottomPosition.y < hitBox.leftTopPosition.y)
+	if (hitBox.leftTopPosition.y <= otherHitBox.rightBottomPosition.y
+		&& hitBox.rightBottomPosition.y >= otherHitBox.leftTopPosition.y)
 	{
 		Y_Hit = true;
 	}

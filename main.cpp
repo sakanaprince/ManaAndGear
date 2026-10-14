@@ -5,7 +5,11 @@ Transform::Position PLAYER_INIT_POS{200,400};
 GameObject player{200,400};
 GameObject enemy{ 128, 0 };
 int waitTime = 0;
-float speed{ 0.0f };
+
+float speed{ 5.0f };
+float dirX{ 0.0f };
+float dirY{ 0.0f };
+
 World_WakeUp
 {
 	ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test2.png");
@@ -28,11 +32,15 @@ World_Update
 	enemy.hitBox = { enemy.transform.position, enemy.transform.position + enHitOffset };
 	enemy.DrawHitBox();
 
-	speed +=  0.01f;
+	if (_gameInput.GetKey('A')) { dirX = -1.0f; }
+	else if(_gameInput.GetKey('D')) { dirX = 1.0f;}
+	else { dirX = 0.0f; }
 
-	if (speed > 30.0f) { speed = 30.0f; }
+	if (_gameInput.GetKey('W')) { dirY = -1.0f; }
+	else if (_gameInput.GetKey('S')) { dirY = 1.0f; }	
+	else { dirY = 0.0f; }
 
-	player.transform.position.y -= speed;
+	player.transform.position += {dirX * speed, dirY * speed};
 
 	if (player.IsHit_BoxBox(enemy.hitBox))
 	{

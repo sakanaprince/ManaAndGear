@@ -41,8 +41,6 @@ void GameObject::DrawHitBox(const Transform::Position& leftTopPos, const Transfo
 }
 
 
-
-
 bool GameObject::IsHit_BoxBox(HitBox otherHitBox) const
 {
 	//AABB

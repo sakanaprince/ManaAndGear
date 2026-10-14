@@ -1,6 +1,7 @@
 #pragma once
 #include "HitBox.h"
 #include "ArtKeys.h"
+#include <memory>
 
 class BitmapArt;
 
@@ -68,6 +69,8 @@ public:
 	/// <returns>当たったらtrue、当たらなかったらfalseになります</returns>
 	bool IsHit_BoxBox(HitBox otherHitBox) const;
 
-
-
+	/// <summary>
+	/// 継承して自由に使って！
+	/// </summary>
+	virtual void OnCloned() {}
 };

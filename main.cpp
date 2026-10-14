@@ -1,9 +1,15 @@
 #include "ManaAndGear.h"
+#include "TestPlayer.h"
+#include <vector>
+#include <memory>
 
 Transform::Position PLAYER_INIT_POS{200,400};
 
 GameObject player{200,400};
-GameObject enemy{ 128, 0 };
+GameObject enemy{ 300, 0 };
+TestPlayer testPlayer{ 100,100 };
+std::vector<std::shared_ptr<TestPlayer>> allGameObject;
+
 int waitTime = 0;
 
 float speed{ 5.0f };
@@ -39,6 +45,30 @@ World_Update
 	if (_gameInput.GetKey('W')) { dirY = -1.0f; }
 	else if (_gameInput.GetKey('S')) { dirY = 1.0f; }	
 	else { dirY = 0.0f; }
+
+	if (_gameInput.GetKey(VK_SPACE))
+	{
+
+		auto ob = _gameObjectManager.Clone(testPlayer);
+		allGameObject.push_back(ob);
+	}
+
+
+
+	for (auto& obj : allGameObject)
+	{
+		obj->transform.position += {dirX* speed, dirY* speed};
+		obj->Draw(ArtKeys::ArtNumber1);
+
+		auto objArtSize = _bitmapArt.GetArtSize(ArtKeys::ArtNumber2);
+
+
+		obj->hitBox = { obj->transform.position,
+			{obj->transform.position.x + objArtSize.width, obj->transform.position.y + objArtSize.height} };
+
+
+		if (obj->IsHit_BoxBox(enemy.hitBox)) { obj->transform.position = PLAYER_INIT_POS; }
+	}
 
 	player.transform.position += {dirX * speed, dirY * speed};
 

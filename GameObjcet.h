@@ -48,6 +48,10 @@ public:
 	/// <param name="artKey"></param>
 	void Draw(ArtKeys artKey) const;
 
+	/// <summary>
+	/// ‚“
+	/// </summary>
+	/// <returns>s</returns>
 	void const DrawHitBox() const;
 
 	/// <summary>

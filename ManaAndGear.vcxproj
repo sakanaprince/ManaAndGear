@@ -149,6 +149,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BitmapArt.cpp" />
+    <ClCompile Include="GameInput.cpp" />
     <ClCompile Include="GameObjcet.cpp" />
     <ClCompile Include="HitBox.cpp" />
     <ClCompile Include="main.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="ArtKeys.h" />
     <ClInclude Include="BitmapArt.h" />
     <ClInclude Include="COMRelease.h" />
+    <ClInclude Include="GameInput.h" />
     <ClInclude Include="GameObjcet.h" />
     <ClInclude Include="HitBox.h" />
     <ClInclude Include="ManaAndGear.h" />

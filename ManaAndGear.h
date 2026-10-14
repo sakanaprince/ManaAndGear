@@ -13,6 +13,7 @@
 #include "Utility.h"
 #include "Transform.h"
 #include "GameObjcet.h"
+#include "GameInput.h"
 
 //DxLibの設定の時に「追加の○○ディレクトリ」的なのを設定していたけれど要はこれみたい
 //ライブラリディレクトリとインクルードディレクトリは別物でした...DxLibはコード内でpragma commmentしてくれてる
@@ -38,6 +39,7 @@ namespace ManaAndGear
     //1. 2.とかついてんのはAI、この口調がおれが書いたやつ
     COMRelease _componentRelease;
     BitmapArt  _bitmapArt;
+    GameInput _gameInput;
     
     //【1】最低限いるやつ　windows側で用意されてるからこっちから実体は作れない（ポインタのみ）
     ID2D1Factory* pFactory = nullptr;
@@ -61,9 +63,7 @@ namespace ManaAndGear
     
     //DEL【7】こいつが画像ハンドルです皆さん！！！！！！！！！！！
     ID2D1Bitmap* pBitmap_testArt = nullptr;
-    
-    D2D1_POINT_2F position = { 470.0f, 250.0f };
-    D2D1_POINT_2F dir = { 1.0f, 0.0f };
+
 }
 
 using namespace ManaAndGear;
@@ -90,10 +90,10 @@ const static void Render()
     D2D1_SIZE_F artSize = pBitmap_testArt->GetSize();
 
     D2D1_RECT_F drawTargetRect = D2D1::RectF(
-        position.x,
-        position.y,
-        position.x + artSize.width,
-        position.y + artSize.height);
+        0,
+        0,
+        0 + artSize.width,
+        0 + artSize.height);
 
     //pRenderTarget->DrawBitmap(pBitmap_testArt, drawTargetRect, 1.0f);
 

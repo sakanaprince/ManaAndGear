@@ -1,6 +1,7 @@
 #pragma once
 #include "HitBox.h"
 #include "ArtKeys.h"
+#include <memory>
 
 class BitmapArt;
 
@@ -9,6 +10,7 @@ class GameObject
 {
 private:
 	inline static BitmapArt* _pBitmapArt{ nullptr };
+	ArtKeys _art{};
 
 public:
 
@@ -35,6 +37,8 @@ public:
 	Transform transform;
 	HitBox hitBox;
 
+	void SetArt(ArtKeys artKey) { _art = artKey; }
+
 	/// <summary>
 	/// ArtKeys‚Ì’†‚É“Ç‚İ‚Ü‚ê‚Ä‚¢‚é‰æ‘œ‚ğsetPosition‚ÌˆÊ’u‚É•`‰æ
 	/// </summary>
@@ -47,6 +51,8 @@ public:
 	/// </summary>
 	/// <param name="artKey"></param>
 	void Draw(ArtKeys artKey) const;
+
+	void Draw()const;
 
 	/// <summary>
 	/// ‚“
@@ -70,4 +76,10 @@ public:
 
 
 
+	/// <summary>
+	/// yŒp³‚µ‚Äg‚¤ŠÖ”zƒNƒ[ƒ“‚³‚ê‚½‚Ìˆ—
+	/// </summary>
+	virtual void OnCloned() {}
+
+	virtual void OnCloneDelated() {}
 };

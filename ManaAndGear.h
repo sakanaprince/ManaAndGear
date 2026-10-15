@@ -14,6 +14,7 @@
 #include "Transform.h"
 #include "GameObjcet.h"
 #include "GameInput.h"
+#include "GameObjectManager.h"
 
 //DxLibの設定の時に「追加の○○ディレクトリ」的なのを設定していたけれど要はこれみたい
 //ライブラリディレクトリとインクルードディレクトリは別物でした...DxLibはコード内でpragma commmentしてくれてる
@@ -40,6 +41,7 @@ namespace ManaAndGear
     COMRelease _componentRelease;
     BitmapArt  _bitmapArt;
     GameInput _gameInput;
+    GameObjectManager _gameObjectManager;
     
     //【1】最低限いるやつ　windows側で用意されてるからこっちから実体は作れない（ポインタのみ）
     ID2D1Factory* pFactory = nullptr;
@@ -299,6 +301,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
             pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::DarkSlateGray));
         }
         UserUpdate();
+        _gameObjectManager.Update();
 
         HRESULT renderResult = pRenderTarget->EndDraw();
         if (IsNG(renderResult)) { FatalError(L"EndDraw失敗"); }

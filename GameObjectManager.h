@@ -1,12 +1,21 @@
 #pragma once
 #include "GameObjcet.h"
 #include <memory>
+#include <vector>
 
 class GameObjectManager
 {
+
+private:
+	std::vector<std::shared_ptr<GameObject>> cloneGameObjects;
+
 public:
 	template <typename T>
-	static std::shared_ptr<T> Clone(const T& original);
+	std::shared_ptr<T> Clone(const T& original);
+
+	void Update();
+	
+
 };
 
 //まぁね、僕設計とか真面目にやったことないんですけど作戦会議しないと駄目そうなので考えます
@@ -27,9 +36,11 @@ public:
 template<typename T>
 inline std::shared_ptr<T> GameObjectManager::Clone(const T& original)
 {
-	 auto makedObj = std::make_shared<T>(original);
+	 auto clonedObject = std::make_shared<T>(original);
 
-	 makedObj->OnCloned();
+	 clonedObject->OnCloned();
 
-	 return makedObj;
+	 cloneGameObjects.push_back(clonedObject);
+
+	 return clonedObject;
 }

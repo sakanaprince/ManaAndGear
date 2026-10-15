@@ -10,6 +10,7 @@ class GameObject
 {
 private:
 	inline static BitmapArt* _pBitmapArt{ nullptr };
+	ArtKeys _art{};
 
 public:
 
@@ -36,6 +37,8 @@ public:
 	Transform transform;
 	HitBox hitBox;
 
+	void SetArt(ArtKeys artKey) { _art = artKey; }
+
 	/// <summary>
 	/// ArtKeysの中に読み込まれている画像をsetPositionの位置に描画
 	/// </summary>
@@ -48,6 +51,8 @@ public:
 	/// </summary>
 	/// <param name="artKey"></param>
 	void Draw(ArtKeys artKey) const;
+
+	void Draw()const;
 
 	/// <summary>
 	/// ｓ
@@ -69,8 +74,12 @@ public:
 	/// <returns>当たったらtrue、当たらなかったらfalseになります</returns>
 	bool IsHit_BoxBox(HitBox otherHitBox) const;
 
+
+
 	/// <summary>
-	/// 継承して自由に使って！
+	/// 【継承して使う関数】クローンされた時の処理
 	/// </summary>
 	virtual void OnCloned() {}
+
+	virtual void OnCloneDelated() {}
 };

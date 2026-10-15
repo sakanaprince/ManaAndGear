@@ -301,6 +301,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
             pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::DarkSlateGray));
         }
         UserUpdate();
+        _gameObjectManager.Update();
 
         HRESULT renderResult = pRenderTarget->EndDraw();
         if (IsNG(renderResult)) { FatalError(L"EndDrawé∏îs"); }

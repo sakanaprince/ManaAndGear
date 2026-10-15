@@ -48,24 +48,18 @@ World_Update
 
 	if (_gameInput.GetKey(VK_SPACE))
 	{
-
 		auto ob = _gameObjectManager.Clone(testPlayer);
 		allGameObject.push_back(ob);
 	}
 
-
-
 	for (auto& obj : allGameObject)
 	{
-		obj->transform.position += {dirX* speed, dirY* speed};
-		obj->Draw(ArtKeys::ArtNumber1);
+		obj->transform.position += {dirX * speed, dirY* speed};
 
-		auto objArtSize = _bitmapArt.GetArtSize(ArtKeys::ArtNumber2);
-
+		auto objArtSize = _bitmapArt.GetArtSize(ArtKeys::ArtNumber1);
 
 		obj->hitBox = { obj->transform.position,
 			{obj->transform.position.x + objArtSize.width, obj->transform.position.y + objArtSize.height} };
-
 
 		if (obj->IsHit_BoxBox(enemy.hitBox)) { obj->transform.position = PLAYER_INIT_POS; }
 	}

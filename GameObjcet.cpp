@@ -29,6 +29,18 @@ void GameObject::Draw(ArtKeys artKey) const
 	_pBitmapArt->DrawArt(artKey, transform.position);
 }
 
+void GameObject::Draw() const
+{
+	if (_pBitmapArt == nullptr)
+	{
+		Util::FatalError(L"pBitmapArtがnullptrだBind関数が呼ばれていないかも\nライブラリの不具合です。ごめんなさい。");
+		return;
+	}
+
+
+	_pBitmapArt->DrawArt(_art, transform.position);
+}
+
 void const GameObject::DrawHitBox() const
 {
 	_pBitmapArt->DrawHitBoxBrush(hitBox.leftTopPosition, hitBox.rightBottomPosition);

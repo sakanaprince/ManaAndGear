@@ -2,6 +2,14 @@
 #include "BitmapArt.h"
 #include "Utility.h"
 
+GameObject::GameObject()
+{
+}
+
+GameObject::GameObject(float _x, float _y) : transform(_x, _y)
+{
+}
+
 void GameObject::Draw(ArtKeys artKey, Transform::Position setPosition) const
 {
 	if (_pBitmapArt == nullptr)

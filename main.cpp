@@ -8,7 +8,6 @@ Transform::Position PLAYER_INIT_POS{200,400};
 GameObject player{200,400};
 GameObject enemy{ 300, 0 };
 TestPlayer testPlayer{ 100,100 };
-std::vector<std::shared_ptr<TestPlayer>> allGameObject;
 
 int waitTime = 0;
 
@@ -26,9 +25,6 @@ World_Start{}
 
 World_Update
 {
-	player.Draw(ArtKeys::ArtNumber1);
-	enemy.Draw(ArtKeys::ArtNumber2);
-
 	auto playerArtSize = _bitmapArt.GetArtSize(ArtKeys::ArtNumber1);
 	Transform::Position offset = { playerArtSize.width, playerArtSize.height };
 	player.hitBox = { player.transform.position, player.transform.position + offset };
@@ -49,25 +45,31 @@ World_Update
 	if (_gameInput.GetKey(VK_SPACE))
 	{
 		auto ob = _gameObjectManager.Clone(testPlayer);
-		allGameObject.push_back(ob);
+		ob->transform.position = player.transform.position;
 	}
 
-	for (auto& obj : allGameObject)
-	{
-		obj->transform.position += {dirX * speed, dirY* speed};
+	
+	enemy.Draw(ArtKeys::ArtNumber2);
+	player.Draw(ArtKeys::ArtNumber1);
 
-		auto objArtSize = _bitmapArt.GetArtSize(ArtKeys::ArtNumber1);
 
-		obj->hitBox = { obj->transform.position,
-			{obj->transform.position.x + objArtSize.width, obj->transform.position.y + objArtSize.height} };
-
-		if (obj->IsHit_BoxBox(enemy.hitBox)) { obj->transform.position = PLAYER_INIT_POS; }
-	}
+	//for (auto& obj : allGameObject)
+	//{
+	//	//obj->transform.position += {dirX * speed, dirY* speed};
+	//	//
+	//	//auto objArtSize = _bitmapArt.GetArtSize(ArtKeys::ArtNumber1);
+	//	//
+	//	//obj->hitBox = { obj->transform.position,
+	//	//	{obj->transform.position.x + objArtSize.width, obj->transform.position.y + objArtSize.height} };
+	//	//
+	//	//if (obj->IsHit_BoxBox(enemy.hitBox)) { obj->transform.position = PLAYER_INIT_POS; }
+	//}
 
 	player.transform.position += {dirX * speed, dirY * speed};
 
 	if (player.IsHit_BoxBox(enemy.hitBox))
 	{
 		player.transform.position = PLAYER_INIT_POS;
+		player.SetActive(false);
 	}
 }

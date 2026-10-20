@@ -302,6 +302,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         }
         UserUpdate();
         _gameObjectManager.Update();
+        _gameObjectManager.Draw();
 
         HRESULT renderResult = pRenderTarget->EndDraw();
         if (IsNG(renderResult)) { FatalError(L"EndDrawé∏îs"); }

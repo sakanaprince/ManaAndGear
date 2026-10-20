@@ -7,13 +7,17 @@ class GameObjectManager
 {
 
 private:
-	std::vector<std::shared_ptr<GameObject>> cloneGameObjects;
+	std::vector<std::shared_ptr<GameObject>> gameObjects;
 
 public:
 	template <typename T>
 	std::shared_ptr<T> Clone(const T& original);
 
+	template <typename T>
+	void AddListGameObject(const T& gameObject);
+
 	void Update();
+	void Draw();
 	
 
 };
@@ -40,7 +44,13 @@ inline std::shared_ptr<T> GameObjectManager::Clone(const T& original)
 
 	 clonedObject->OnCloned();
 
-	 cloneGameObjects.push_back(clonedObject);
+	 gameObjects.push_back(clonedObject);
 
 	 return clonedObject;
+}
+
+template<typename T>
+inline void GameObjectManager::AddListGameObject(const T& gameObject)
+{
+	gameObjects.push_back(gameObject);
 }

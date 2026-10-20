@@ -12,7 +12,12 @@ public:
 	{
 		transform.position = { 20,20 };
 
-		MessageBox(NULL, L" A L I V E", L"", 0);
-	};
+		MessageBox(NULL, L"ÉXÉ|Å[Éì", L"", 0);
+	}
+
+	void Update() override
+	{
+		transform.position.x += 0.5f;
+	}
 };
 

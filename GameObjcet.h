@@ -11,7 +11,7 @@ class GameObject
 private:
 	inline static BitmapArt* _pBitmapArt{ nullptr };
 	ArtKeys _art{};
-
+	bool _active{ true };
 public:
 
 	/// <summary>
@@ -29,15 +29,17 @@ public:
 	}
 
 
-	GameObject() = default;
+	GameObject();
 	//GameObject宣言時に初期座標を指定できるように
-	GameObject(float _x, float _y) : transform(_x, _y) {};
+	GameObject(float _x, float _y);
 
 	//直感的に使えるようにあえて,publicにしている
 	Transform transform;
 	HitBox hitBox;
 
 	void SetArt(ArtKeys artKey) { _art = artKey; }
+
+
 
 	/// <summary>
 	/// ArtKeysの中に読み込まれている画像をsetPositionの位置に描画
@@ -74,6 +76,8 @@ public:
 	/// <returns>当たったらtrue、当たらなかったらfalseになります</returns>
 	bool IsHit_BoxBox(HitBox otherHitBox) const;
 
+	void SetActive(const bool active) { _active = active; }
+	bool const IsActive() const { return _active; }
 
 
 	/// <summary>
@@ -82,4 +86,6 @@ public:
 	virtual void OnCloned() {}
 
 	virtual void OnCloneDelated() {}
+
+	virtual void Update() {}
 };

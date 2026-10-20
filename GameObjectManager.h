@@ -7,8 +7,11 @@ class GameObjectManager
 {
 
 private:
-	std::vector<std::shared_ptr<GameObject>> gameObjects;
+	//std::vector<std::shared_ptr<GameObject>> gameObjects;
+	std::vector<GameObject*> gameObjects;
 
+	//privateにコンストラクタを置くと他のクラスで　GameObjectManager otherManager;とか出来なくなる
+	GameObjectManager() = default;
 public:
 	template <typename T>
 	std::shared_ptr<T> Clone(const T& original);
@@ -18,7 +21,19 @@ public:
 
 	void Update();
 	void Draw();
-	
+
+	static GameObjectManager& GetInstance()
+	{
+		// 初めて呼び出された時に1度だけ初期化される（スレッドセーフ）
+		static GameObjectManager instance;
+		return instance;
+	}
+
+	GameObjectManager(const GameObjectManager&) = delete;
+	GameObjectManager& operator=(const GameObjectManager&) = delete;
+	// ムーブ演算も削除しておくとより安全
+	GameObjectManager(GameObjectManager&&) = delete;
+	GameObjectManager& operator=(GameObjectManager&&) = delete;
 
 };
 
@@ -42,9 +57,9 @@ inline std::shared_ptr<T> GameObjectManager::Clone(const T& original)
 {
 	 auto clonedObject = std::make_shared<T>(original);
 
-	 clonedObject->OnCloned();
+	 /*clonedObject->OnCloned();
 
-	 gameObjects.push_back(clonedObject);
+	 gameObjects.push_back(clonedObject);*/
 
 	 return clonedObject;
 }

@@ -2,20 +2,20 @@
 
 void GameObjectManager::Update()
 {
-	for (auto& clonedObj : gameObjects)
+	for (auto& obj : gameObjects)
 	{
-		if (clonedObj->IsActive() == false) { continue; }
+		if (obj->IsActive() == false) { continue; }
 
-		clonedObj->Update();
+		obj->Update();
 	}
 }
 
 void GameObjectManager::Draw()
 {
-	for (auto& clonedObj : gameObjects)
+	for (auto& obj : gameObjects)
 	{
-		if (clonedObj->IsActive() == false) { continue; }
+		if(obj->IsActive() == false) { continue; }
 
-		clonedObj->Draw();
+		obj->Draw();
 	}
 }

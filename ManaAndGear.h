@@ -41,7 +41,6 @@ namespace ManaAndGear
     COMRelease _componentRelease;
     BitmapArt  _bitmapArt;
     GameInput _gameInput;
-    GameObjectManager _gameObjectManager;
     
     //【1】最低限いるやつ　windows側で用意されてるからこっちから実体は作れない（ポインタのみ）
     ID2D1Factory* pFactory = nullptr;
@@ -301,8 +300,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
             pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::DarkSlateGray));
         }
         UserUpdate();
-        _gameObjectManager.Update();
-        _gameObjectManager.Draw();
+        //_gameObjectManager.Update();
+        //_gameObjectManager.Draw();
+        GameObjectManager::GetInstance().Update();
+        GameObjectManager::GetInstance().Draw();
 
         HRESULT renderResult = pRenderTarget->EndDraw();
         if (IsNG(renderResult)) { FatalError(L"EndDraw失敗"); }

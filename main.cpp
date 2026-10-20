@@ -7,7 +7,6 @@ Transform::Position PLAYER_INIT_POS{200,400};
 
 GameObject player{200,400};
 GameObject enemy{ 300, 0 };
-TestPlayer testPlayer{ 100,100 };
 
 int waitTime = 0;
 
@@ -19,6 +18,9 @@ World_WakeUp
 {
 	ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test2.png");
 	ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber2, L"./Data/Image/Ammonite.png");
+
+	player.SetArt(ArtKeys::ArtNumber1);
+	enemy.SetArt(ArtKeys::ArtNumber2);
 }
 
 World_Start{}
@@ -42,31 +44,18 @@ World_Update
 	else if (_gameInput.GetKey('S')) { dirY = 1.0f; }	
 	else { dirY = 0.0f; }
 
-	if (_gameInput.GetKey(VK_SPACE))
-	{
-		auto ob = _gameObjectManager.Clone(testPlayer);
-		ob->transform.position = player.transform.position;
-	}
-
-	
-	enemy.Draw(ArtKeys::ArtNumber2);
-	player.Draw(ArtKeys::ArtNumber1);
-
-
-	//for (auto& obj : allGameObject)
-	//{
-	//	//obj->transform.position += {dirX * speed, dirY* speed};
-	//	//
-	//	//auto objArtSize = _bitmapArt.GetArtSize(ArtKeys::ArtNumber1);
-	//	//
-	//	//obj->hitBox = { obj->transform.position,
-	//	//	{obj->transform.position.x + objArtSize.width, obj->transform.position.y + objArtSize.height} };
-	//	//
-	//	//if (obj->IsHit_BoxBox(enemy.hitBox)) { obj->transform.position = PLAYER_INIT_POS; }
-	//}
-
 	player.transform.position += {dirX * speed, dirY * speed};
 
+
+
+
+	/// <summary>
+	/// ここを見て！！！！！！！！！ここを見て！！！！！！！！！ここを見て！！！！！！！！！
+	/// ここを見て！！！！！！！！！ここを見て！！！！！！！！！ここを見て！！！！！！！！！
+	/// ここを見て！！！！！！！！！ここを見て！！！！！！！！！ここを見て！！！！！！！！！
+	/// ここを見て！！！！！！！！！ここを見て！！！！！！！！！ここを見て！！！！！！！！！
+	/// ここを見て！！！！！！！！！ここを見て！！！！！！！！！ここを見て！！！！！！！！！
+	/// </summary>
 	if (player.IsHit_BoxBox(enemy.hitBox))
 	{
 		player.transform.position = PLAYER_INIT_POS;

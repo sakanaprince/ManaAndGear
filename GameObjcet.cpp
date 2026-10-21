@@ -5,12 +5,18 @@
 
 GameObject::GameObject()
 {
-	GameObjectManager::GetInstance().AddListGameObject(this);
+	GameObjectManager::GetInstance().AddListGameObject(*this);
 }
 
 GameObject::GameObject(float _x, float _y) : transform(_x, _y)
 {
-	GameObjectManager::GetInstance().AddListGameObject(this);
+	GameObjectManager::GetInstance().AddListGameObject(*this);
+}
+
+GameObject::GameObject(const GameObject& other)
+:transform(other.transform.position.x, other.transform.position.y)
+{
+	GameObjectManager::GetInstance().AddCloneGameObject(*this);
 }
 
 void GameObject::Draw(ArtKeys artKey, Transform::Position setPosition) const

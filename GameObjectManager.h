@@ -5,20 +5,25 @@
 
 class GameObjectManager
 {
-
 private:
 	//std::vector<std::shared_ptr<GameObject>> gameObjects;
 	std::vector<GameObject*> gameObjects;
+	std::vector<GameObject*> clonedGameObjects;
 
 	//privateにコンストラクタを置くと他のクラスで　GameObjectManager otherManager;とか出来なくなる
 	GameObjectManager() = default;
+
 public:
-	template <typename T>
-	std::shared_ptr<T> Clone(const T& original);
 
-	template <typename T>
-	void AddListGameObject(const T& gameObject);
+	void AddListGameObject(GameObject& gameObject);
 
+	/// <summary>
+	/// Cloneされたものはnewされている（ヒープ）なのでデストラクタ時にdeleteするリストに登録する
+	/// スタック領域の変数はヒープではないので、deleteすることは出来ない（また異世界に飛ばされてしまう
+	/// </summary>
+	/// <param name="gameObject"></param>
+	void AddCloneGameObject(GameObject& gameObject);
+	
 	void Update();
 	void Draw();
 
@@ -34,6 +39,18 @@ public:
 	// ムーブ演算も削除しておくとより安全
 	GameObjectManager(GameObjectManager&&) = delete;
 	GameObjectManager& operator=(GameObjectManager&&) = delete;
+
+	~GameObjectManager()
+	{
+		// プログラム終了時に全オブジェクトを破棄
+		for (GameObject* obj : clonedGameObjects)
+		{
+			if(obj){
+				MessageBox(NULL, L"消したCloneObject", L"通知くん", 0);
+				delete obj; }
+		}
+		clonedGameObjects.clear();
+	}
 
 };
 
@@ -52,20 +69,17 @@ public:
 	//今一番悩んでるのはユーザーがGameObjを継承した任意のクラスの複製をどうするかってのに頭かかえてる
 	//T型でこわいのはObj派生以外が来たら泣くよっていう不安、まあTで一回作るわ
 
-template<typename T>
-inline std::shared_ptr<T> GameObjectManager::Clone(const T& original)
-{
-	 auto clonedObject = std::make_shared<T>(original);
+//template<typename T>
+//inline std::shared_ptr<T> GameObjectManager::Clone(const T& original, Transform& _transform)
+//{
+//	auto clonedObject = std::make_shared<T>(original);
+//
+//	clonedObject->OnCloned();
+//	clonedObject->transform.position = _transform.position;
+//
+//	gameObjects.push_back(clonedObject);
+//
+//	return clonedObject;
+//}
 
-	 /*clonedObject->OnCloned();
 
-	 gameObjects.push_back(clonedObject);*/
-
-	 return clonedObject;
-}
-
-template<typename T>
-inline void GameObjectManager::AddListGameObject(const T& gameObject)
-{
-	gameObjects.push_back(gameObject);
-}

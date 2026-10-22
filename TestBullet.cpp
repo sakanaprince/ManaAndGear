@@ -1,10 +1,5 @@
 #include "TestBullet.h"
 
-
-void TestBullet::OnCloned()
-{
-}
-
 GameObject* TestBullet::Clone(Transform initTransform)
 {
     GameObject* maked = new TestBullet(*this);

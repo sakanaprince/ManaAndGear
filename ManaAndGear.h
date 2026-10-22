@@ -15,6 +15,7 @@
 #include "GameObjcet.h"
 #include "GameInput.h"
 #include "GameObjectManager.h"
+#include "FontText.h"
 
 //DxLibの設定の時に「追加の○○ディレクトリ」的なのを設定していたけれど要はこれみたい
 //ライブラリディレクトリとインクルードディレクトリは別物でした...DxLibはコード内でpragma commmentしてくれてる
@@ -41,7 +42,8 @@ namespace ManaAndGear
     COMRelease _componentRelease;
     BitmapArt  _bitmapArt;
     GameInput _gameInput;
-    
+    FontText _fontText;
+
     //【1】最低限いるやつ　windows側で用意されてるからこっちから実体は作れない（ポインタのみ）
     ID2D1Factory* pFactory = nullptr;
     
@@ -250,6 +252,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     MSG msg = {};
 
     _bitmapArt.Init(pRenderTarget, pWICFactory);
+    _fontText.Init(pRenderTarget);
     GameObject::BindBitMapArt(&_bitmapArt);
 
     UserInit();

@@ -2,13 +2,13 @@
 
 void GameObjectManager::AddListGameObject(GameObject& gameObject)
 {		
-	MessageBox(NULL, L"Stack OBJ", L"e", 0);
+	//MessageBox(NULL, L"Stack OBJ", L"e", 0);
 	gameObjects.push_back(&gameObject);	
 }
 
 void GameObjectManager::AddCloneGameObject(GameObject& gameObject)
 {
-	MessageBox(NULL, L"Heap OBJ", L"e", 0);
+	//MessageBox(NULL, L"Heap OBJ", L"e", 0);
 	clonedGameObjects.push_back(&gameObject);
 }
 

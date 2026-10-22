@@ -43,9 +43,10 @@ World_Update
 	if (_gameInput.GetKey(VK_SPACE))
 	{
 		GameObject* ob = bullet.Clone(player.transform);
-		ob->OnCloned();
 		ob->SetArt(ArtKeys::ArtNumber2);
 		ob->SetActive(true);
 	}
+
+	ManaAndGear::_fontText.TextDraw(30, 30, L"DDD");
 
 }

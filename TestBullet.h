@@ -14,8 +14,6 @@ public:
 
 
 	// GameObject ‚ğ‰î‚µ‚ÄŒp³‚³‚ê‚Ü‚µ‚½
-
-	void OnCloned()override;
 	void BulletInit(Transform::Position pos) { transform.position = pos; }
 
 	// GameObject ‚ğ‰î‚µ‚ÄŒp³‚³‚ê‚Ü‚µ‚½

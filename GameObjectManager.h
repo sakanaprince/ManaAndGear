@@ -2,6 +2,7 @@
 #include "GameObjcet.h"
 #include <memory>
 #include <vector>
+#include <string>
 
 class GameObjectManager
 {
@@ -42,14 +43,20 @@ public:
 
 	~GameObjectManager()
 	{
+		int delCount = 0;
 		// プログラム終了時に全オブジェクトを破棄
 		for (GameObject* obj : clonedGameObjects)
 		{
-			if(obj){
-				MessageBox(NULL, L"消したCloneObject", L"通知くん", 0);
+			if(obj){ 
+				delCount++;
 				delete obj; }
 		}
 		clonedGameObjects.clear();
+
+		std::wstring message = L"消したCloneObject: " + std::to_wstring(delCount) + L" 個";
+
+		// メッセージボックスを表示
+		MessageBox(NULL, message.c_str(), L"通知くん", MB_OK);
 	}
 
 };
@@ -68,6 +75,9 @@ public:
 	//そして【１】【２】を見た限りマジでObjManagerいらない説が...
 	//今一番悩んでるのはユーザーがGameObjを継承した任意のクラスの複製をどうするかってのに頭かかえてる
 	//T型でこわいのはObj派生以外が来たら泣くよっていう不安、まあTで一回作るわ
+
+//後日出た答え：GameObjectManagerが描画とか更新処理を代わりに行う、クローン処理はユーザーに書いてもらうように
+//座標とかの引数をこちらは受け取る感じで
 
 //template<typename T>
 //inline std::shared_ptr<T> GameObjectManager::Clone(const T& original, Transform& _transform)

@@ -87,13 +87,6 @@ public:
 	void SetActive(const bool active) { _active = active; }
 	bool const IsActive() const { return _active; }
 
-
-	/// <summary>
-	/// 【継承して使う関数】クローンされた時の処理
-	/// </summary>
-	virtual void OnCloned() {}
-
-
 	/// <summary>
 	/// 実装してくれてありがとう！
 	/// </summary>

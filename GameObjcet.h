@@ -5,13 +5,20 @@
 
 class BitmapArt;
 
-
 class GameObject
 {
 private:
 	inline static BitmapArt* _pBitmapArt{ nullptr };
 	ArtKeys _art{};
 	bool _active{ true };
+
+	//ディープコピー とか　あさいコピーとかが存在する
+	//ディープがしっかりコピー　unity Prefab的な
+	//あさいコピーが参照？的なイメージ　（*EnemySlimeStatusをEnemySlimeが参照する的な、
+	// EnemySlimeが持っているEnemySlimeStatusを変更すると全員変更されてしまう！）
+
+protected:
+
 public:
 
 	/// <summary>
@@ -33,12 +40,13 @@ public:
 	//GameObject宣言時に初期座標を指定できるように
 	GameObject(float _x, float _y);
 
+	GameObject(const GameObject& other);
+
 	//直感的に使えるようにあえて,publicにしている
 	Transform transform;
 	HitBox hitBox;
 
 	void SetArt(ArtKeys artKey) { _art = artKey; }
-
 
 
 	/// <summary>
@@ -79,13 +87,13 @@ public:
 	void SetActive(const bool active) { _active = active; }
 	bool const IsActive() const { return _active; }
 
-
 	/// <summary>
-	/// 【継承して使う関数】クローンされた時の処理
+	/// 実装してくれてありがとう！
 	/// </summary>
-	virtual void OnCloned() {}
+	/// <returns></returns>
+	virtual GameObject* Clone(Transform initTransform) = 0;
 
-	virtual void OnCloneDelated() {}
+	virtual void Update() = 0;
+	virtual void OnCloneDelated() = 0;
 
-	virtual void Update() {}
 };

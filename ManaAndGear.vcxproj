@@ -149,11 +149,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BitmapArt.cpp" />
+    <ClCompile Include="FontText.cpp" />
     <ClCompile Include="GameInput.cpp" />
     <ClCompile Include="GameObjcet.cpp" />
     <ClCompile Include="GameObjectManager.cpp" />
     <ClCompile Include="HitBox.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="TestBullet.cpp" />
     <ClCompile Include="TestPlayer.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Utility.cpp" />
@@ -162,11 +164,13 @@
     <ClInclude Include="ArtKeys.h" />
     <ClInclude Include="BitmapArt.h" />
     <ClInclude Include="COMRelease.h" />
+    <ClInclude Include="FontText.h" />
     <ClInclude Include="GameInput.h" />
     <ClInclude Include="GameObjcet.h" />
     <ClInclude Include="GameObjectManager.h" />
     <ClInclude Include="HitBox.h" />
     <ClInclude Include="ManaAndGear.h" />
+    <ClInclude Include="TestBullet.h" />
     <ClInclude Include="TestPlayer.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Utility.h" />

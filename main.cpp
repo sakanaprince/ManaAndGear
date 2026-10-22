@@ -1,13 +1,13 @@
 #include "ManaAndGear.h"
-#include "TestPlayer.h"
 #include <vector>
 #include <memory>
 
+#include "TestPlayer.h"
+#include "TestBullet.h"
 Transform::Position PLAYER_INIT_POS{200,400};
 
-GameObject player{200,400};
-GameObject enemy{ 300, 0 };
-TestPlayer testPlayer{ 100,100 };
+TestPlayer player{200,400};
+TestBullet bullet{200,300};
 
 int waitTime = 0;
 
@@ -19,21 +19,16 @@ World_WakeUp
 {
 	ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test2.png");
 	ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber2, L"./Data/Image/Ammonite.png");
+
+	player.SetArt(ArtKeys::ArtNumber1);
+	bullet.SetArt(ArtKeys::ArtNumber2);
+	bullet.SetActive(false);
 }
 
 World_Start{}
 
 World_Update
 {
-	auto playerArtSize = _bitmapArt.GetArtSize(ArtKeys::ArtNumber1);
-	Transform::Position offset = { playerArtSize.width, playerArtSize.height };
-	player.hitBox = { player.transform.position, player.transform.position + offset };
-
-	auto enemyArtSize = _bitmapArt.GetArtSize(ArtKeys::ArtNumber2);
-	Transform::Position enHitOffset = { enemyArtSize.width,enemyArtSize.height };
-	enemy.hitBox = { enemy.transform.position, enemy.transform.position + enHitOffset };
-	enemy.DrawHitBox();
-
 	if (_gameInput.GetKey('A')) { dirX = -1.0f; }
 	else if(_gameInput.GetKey('D')) { dirX = 1.0f;}
 	else { dirX = 0.0f; }
@@ -42,34 +37,16 @@ World_Update
 	else if (_gameInput.GetKey('S')) { dirY = 1.0f; }	
 	else { dirY = 0.0f; }
 
-	if (_gameInput.GetKey(VK_SPACE))
-	{
-		auto ob = _gameObjectManager.Clone(testPlayer);
-		ob->transform.position = player.transform.position;
-	}
-
-	
-	enemy.Draw(ArtKeys::ArtNumber2);
-	player.Draw(ArtKeys::ArtNumber1);
-
-
-	//for (auto& obj : allGameObject)
-	//{
-	//	//obj->transform.position += {dirX * speed, dirY* speed};
-	//	//
-	//	//auto objArtSize = _bitmapArt.GetArtSize(ArtKeys::ArtNumber1);
-	//	//
-	//	//obj->hitBox = { obj->transform.position,
-	//	//	{obj->transform.position.x + objArtSize.width, obj->transform.position.y + objArtSize.height} };
-	//	//
-	//	//if (obj->IsHit_BoxBox(enemy.hitBox)) { obj->transform.position = PLAYER_INIT_POS; }
-	//}
-
 	player.transform.position += {dirX * speed, dirY * speed};
 
-	if (player.IsHit_BoxBox(enemy.hitBox))
+	//！！！念願の超簡単クローン処理ができたぞ！！！
+	if (_gameInput.GetKey(VK_SPACE))
 	{
-		player.transform.position = PLAYER_INIT_POS;
-		player.SetActive(false);
+		GameObject* ob = bullet.Clone(player.transform);
+		ob->SetArt(ArtKeys::ArtNumber2);
+		ob->SetActive(true);
 	}
+
+	ManaAndGear::_fontText.TextDraw(30, 30, L"DDD");
+
 }

@@ -15,6 +15,9 @@ private:
 	ID2D1SolidColorBrush* pSolidColorBrush;
 	IDWriteTextFormat* _pTextFormat{nullptr};
 
+	float _currentTime{ 0.0f };
+	UINT32 _typewriterAutoCount{0};
+
 public:
 
 	void Init(ID2D1RenderTarget* render)
@@ -42,21 +45,17 @@ public:
 		if (Util::IsNG(result)) { Util::FatalError(L"FontText:solidColorBrush作成失敗"); }
 	}
 
-	void TextDraw(float x, float y, const wchar_t* text, D2D1_COLOR_F cl = {0.0f,0.0f,1.0f,1.0f})
-	{
-		D2D1_RECT_F targetRect =
-		{
-			x,y,x + 1000, y + 500
-		};
 
-		pSolidColorBrush->SetColor(cl);
+	//同名の関数でオーバーロードすれば良い話に見えそうだけど初心者向けなので
+	//ややこしく思わせないために別名で定義
 
-		UINT32 textLength = static_cast<UINT32>(wcslen(text));
+	void TextDraw(float x, float y, const wchar_t* text, D2D1_COLOR_F cl = { 0.0f,0.0f,1.0f,1.0f });
 
-		//ここの第二引数いじればタイプライター風に出来る説
-		if(pSolidColorBrush){ _pRenderTarget->DrawTextW(text, textLength, _pTextFormat, targetRect, pSolidColorBrush); }		
-	}
+	void TextDrawTypewriter(float x, float y, const wchar_t* text, D2D1_COLOR_F cl = { 0.0f,0.0f,1.0f,1.0f }, UINT32 typeCount = 1);
 
+	void TextDrawTypewriterAuto(float outputDuration, float deltaTime, float x, float y, const wchar_t* text, D2D1_COLOR_F cl = { 0.0f,0.0f,1.0f,1.0f });
+
+	
 	~FontText()
 	{
 		if (pSolidColorBrush) 

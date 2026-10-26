@@ -11,7 +11,7 @@ GameObject* TestBullet::Clone(Transform initTransform)
 
 void TestBullet::Update()
 {
-    transform.position.x += 5.0f;
+    transform.position.x += 15.0f;
 
     if (transform.position.x > 900.0f) { SetActive(false); }
 }

@@ -6,6 +6,7 @@
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
+#include <chrono>
 
 //わしのクラス
 #include "COMRelease.h"
@@ -28,12 +29,15 @@
 
 #define World_WakeUp  void UserInit()
 #define World_Start  void UserStart()
-#define World_Update void UserUpdate()
+#define World_FirstUpdate void UserUpdate(float deltaTime)
+#define World_SecondUpdate void UserUI_Update(float deltaTime)
 
 //ユーザーに書いてもらう
 void UserInit();
 void UserStart();
-void UserUpdate();
+void UserUpdate(float deltaTime);
+void UserUI_Update(float deltaTime);
+
 
 namespace ManaAndGear
 {
@@ -42,7 +46,12 @@ namespace ManaAndGear
     COMRelease _componentRelease;
     BitmapArt  _bitmapArt;
     GameInput _gameInput;
-    FontText _fontText;
+
+    namespace UI
+    {
+        FontText fontText;
+    }
+  
 
     //【1】最低限いるやつ　windows側で用意されてるからこっちから実体は作れない（ポインタのみ）
     ID2D1Factory* pFactory = nullptr;
@@ -70,6 +79,7 @@ namespace ManaAndGear
 }
 
 using namespace ManaAndGear;
+using namespace ManaAndGear::UI;
 
 //あんしん　おなじみ　だいすき
 const float playerSpeed = 5.0f;
@@ -252,11 +262,16 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     MSG msg = {};
 
     _bitmapArt.Init(pRenderTarget, pWICFactory);
-    _fontText.Init(pRenderTarget);
+    fontText.Init(pRenderTarget);
     GameObject::BindBitMapArt(&_bitmapArt);
 
     UserInit();
     UserStart();
+
+    std::chrono::system_clock::time_point  currentTime;
+    std::chrono::system_clock::time_point  prevTime;
+
+
     while (msg.message != WM_QUIT)
     {
         //実行ファイルがメッセージを受け取るために PeekMessageを使い、溜まっているメッセージを処理させる
@@ -302,11 +317,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
             pRenderTarget->BeginDraw();
             pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::DarkSlateGray));
         }
-        UserUpdate();
-        //_gameObjectManager.Update();
-        //_gameObjectManager.Draw();
+        currentTime = std::chrono::system_clock::now();
+        float elapsedTime = std::chrono::duration<float>(currentTime - prevTime).count();
+        UserUpdate(elapsedTime);
         GameObjectManager::GetInstance().Update();
         GameObjectManager::GetInstance().Draw();
+        UserUI_Update(elapsedTime);
+        prevTime = currentTime;
 
         HRESULT renderResult = pRenderTarget->EndDraw();
         if (IsNG(renderResult)) { FatalError(L"EndDraw失敗"); }

@@ -15,6 +15,7 @@ float speed{ 5.0f };
 float dirX{ 0.0f };
 float dirY{ 0.0f };
 
+int typeCount = 0;
 World_WakeUp
 {
 	ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test2.png");
@@ -27,7 +28,7 @@ World_WakeUp
 
 World_Start{}
 
-World_Update
+World_FirstUpdate
 {
 	if (_gameInput.GetKey('A')) { dirX = -1.0f; }
 	else if(_gameInput.GetKey('D')) { dirX = 1.0f;}
@@ -39,7 +40,6 @@ World_Update
 
 	player.transform.position += {dirX * speed, dirY * speed};
 
-	//！！！念願の超簡単クローン処理ができたぞ！！！
 	if (_gameInput.GetKey(VK_SPACE))
 	{
 		GameObject* ob = bullet.Clone(player.transform);
@@ -47,7 +47,21 @@ World_Update
 		ob->SetActive(true);
 	}
 
-	if (_gameInput.GetKey('1')) { ManaAndGear::_fontText.TextDraw(30, 30, L"やぁ！さかなディフェンスです。", D2D1_COLOR_F{ 1,1,1,1 }); }
-	else if (_gameInput.GetKey('2')) { ManaAndGear::_fontText.TextDraw(30, 30, L"やぁ！さかなディフェンスです。", D2D1_COLOR_F{ 0,1,0,1 }); }
-	else if (_gameInput.GetKey('3')) { ManaAndGear::_fontText.TextDraw(30, 30, L"やぁ！さかなディフェンスです。"); }
+	if (_gameInput.GetKey('T'))
+	{
+		typeCount++;
+	}
+}
+
+World_SecondUpdate
+{
+	if (_gameInput.GetKey('1')) { ManaAndGear::UI::fontText.TextDraw(30, 30, L"やぁ！さかなディフェンスです。", D2D1_COLOR_F{ 1,1,1,1 }); }
+	else if (_gameInput.GetKey('2')) { ManaAndGear::UI::fontText.TextDraw(30, 30, L"やぁ！さかなディフェンスです。", D2D1_COLOR_F{ 0,1,0,1 }); }
+	else if (_gameInput.GetKey('3')) { ManaAndGear::UI::fontText.TextDraw(30, 30, L"やぁ！さかなディフェンスです。"); }
+	else { ManaAndGear::UI::fontText.TextDraw(30, 70, L"やぁ！さかなディフェンスです。", D2D1_COLOR_F{0,0,0,1}); }
+
+	ManaAndGear::UI::fontText.TextDrawTypewriterAuto(0.1f,deltaTime, 60,200,
+		L"ほにゅうびんってなんですか？そう私はよく聞かれるが\nその答えはあざらしが"
+		L"知っていると答える。ではあざらしとは何か？\nそれは私がよく知っていると思う。"
+		L"そう、あざらしとはマジックあざらしである。魔法を使って国を救う正義の存在である。",D2D1_COLOR_F{1,0,0,1});
 }

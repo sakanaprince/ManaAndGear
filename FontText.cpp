@@ -1,7 +1,34 @@
 #include "FontText.h"
+#include "Time.h"
 
 #include <iostream>
 #include <algorithm>
+
+void FontText::Init(ID2D1RenderTarget* render, Time* pTime)
+{
+	_pRenderTarget = render;
+	_pTime = pTime;
+
+	DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED,
+		__uuidof(IDWriteFactory),
+		reinterpret_cast<IUnknown**>(&_writeFactory));
+
+	//writeFactoryがフォーマットを作成
+	_writeFactory->CreateTextFormat(
+		L"Gabriola",
+		NULL,
+		DWRITE_FONT_WEIGHT_REGULAR,
+		DWRITE_FONT_STYLE_NORMAL,
+		DWRITE_FONT_STRETCH_NORMAL,
+		30.0f,
+		L"en-us",
+		&_pTextFormat
+	);
+
+	HRESULT result = _pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(0, 0, 1.0f, 1.0f), &pSolidColorBrush);
+
+	if (Util::IsNG(result)) { Util::FatalError(L"FontText:solidColorBrush作成失敗"); }
+}
 
 void FontText::TextDraw(float x, float y, const wchar_t* text, D2D1_COLOR_F cl)
 {
@@ -40,16 +67,13 @@ void FontText::TextDrawTypewriter(float x, float y, const wchar_t* text, D2D1_CO
 
 }
 
-void FontText::TextDrawTypewriterAuto(float outputDuration, float deltaTime, float x, float y, const wchar_t* text, D2D1_COLOR_F cl)
+/*
+void FontText::TextDrawTypewriterAuto(float outputDuration, float x, float y, const wchar_t* text, D2D1_COLOR_F cl)
 {
-	_currentTime += deltaTime;
-	if (_currentTime >= outputDuration)
-	{
-		_currentTime = 0.0f;
-		_typewriterAutoCount++;
-	}
+	float outputRate = static_cast<float>(_pTime->GetNowTime()) / outputDuration;
 
-	
+	UINT32 outputCount = static_cast<UINT32>(outputRate);
+
 
 	D2D1_RECT_F targetRect =
 	{
@@ -62,8 +86,9 @@ void FontText::TextDrawTypewriterAuto(float outputDuration, float deltaTime, flo
 	UINT32 textMaxLength = static_cast<UINT32>(wcslen(text));
 	 
 
-	UINT32 drawTextCount = (std::min)(_typewriterAutoCount, textMaxLength);
+	UINT32 drawTextCount = (std::min)(outputCount, textMaxLength);
 
 	//ここの第二引数いじればタイプライター風に出来る説
 	if (pSolidColorBrush) { _pRenderTarget->DrawTextW(text, drawTextCount, _pTextFormat, targetRect, pSolidColorBrush); }
 }
+*/

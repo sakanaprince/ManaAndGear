@@ -157,6 +157,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="TestBullet.cpp" />
     <ClCompile Include="TestPlayer.cpp" />
+    <ClCompile Include="Time.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Utility.cpp" />
   </ItemGroup>
@@ -172,6 +173,7 @@
     <ClInclude Include="ManaAndGear.h" />
     <ClInclude Include="TestBullet.h" />
     <ClInclude Include="TestPlayer.h" />
+    <ClInclude Include="Time.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>

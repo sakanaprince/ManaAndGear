@@ -6,7 +6,7 @@
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
-#include <chrono>
+
 
 //わしのクラス
 #include "COMRelease.h"
@@ -17,6 +17,7 @@
 #include "GameInput.h"
 #include "GameObjectManager.h"
 #include "FontText.h"
+#include "Time.h"
 
 //DxLibの設定の時に「追加の○○ディレクトリ」的なのを設定していたけれど要はこれみたい
 //ライブラリディレクトリとインクルードディレクトリは別物でした...DxLibはコード内でpragma commmentしてくれてる
@@ -29,14 +30,14 @@
 
 #define World_WakeUp  void UserInit()
 #define World_Start  void UserStart()
-#define World_FirstUpdate void UserUpdate(float deltaTime)
-#define World_SecondUpdate void UserUI_Update(float deltaTime)
+#define World_FirstUpdate void UserUpdate(double deltaTime)
+#define World_SecondUpdate void UserUI_Update(double deltaTime)
 
 //ユーザーに書いてもらう
 void UserInit();
 void UserStart();
-void UserUpdate(float deltaTime);
-void UserUI_Update(float deltaTime);
+void UserUpdate(double deltaTime);
+void UserUI_Update(double deltaTime);
 
 
 namespace ManaAndGear
@@ -46,6 +47,7 @@ namespace ManaAndGear
     COMRelease _componentRelease;
     BitmapArt  _bitmapArt;
     GameInput _gameInput;
+    Time _time;
 
     namespace UI
     {
@@ -164,7 +166,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     //追記　まるちすれっど危ないみたい
     HRESULT coInitializeResult = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
     if (IsNG(coInitializeResult)) { FatalError(L"コンポーネントオブジェクト初期化失敗"); }
-
+    
 
     // 2. ウィンドウクラスの登録
     const wchar_t CLASS_NAME[] = L"Direct2DGameWindow";
@@ -261,16 +263,15 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     //MSG構造体にはウィンドウ、メッセージ、時間、マウス座標まで入ってる。
     MSG msg = {};
 
+    _time.Init();
     _bitmapArt.Init(pRenderTarget, pWICFactory);
-    fontText.Init(pRenderTarget);
+    fontText.Init(pRenderTarget, &_time);
     GameObject::BindBitMapArt(&_bitmapArt);
 
+
+    //以下ユーザー側の処理を行う
     UserInit();
     UserStart();
-
-    std::chrono::system_clock::time_point  currentTime;
-    std::chrono::system_clock::time_point  prevTime;
-
 
     while (msg.message != WM_QUIT)
     {
@@ -317,13 +318,16 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
             pRenderTarget->BeginDraw();
             pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::DarkSlateGray));
         }
-        currentTime = std::chrono::system_clock::now();
-        float elapsedTime = std::chrono::duration<float>(currentTime - prevTime).count();
+
+        _time.StartFrame();
+        float elapsedTime = _time.GetDeltaTime();
+
         UserUpdate(elapsedTime);
         GameObjectManager::GetInstance().Update();
         GameObjectManager::GetInstance().Draw();
         UserUI_Update(elapsedTime);
-        prevTime = currentTime;
+
+        _time.EndFrame();
 
         HRESULT renderResult = pRenderTarget->EndDraw();
         if (IsNG(renderResult)) { FatalError(L"EndDraw失敗"); }

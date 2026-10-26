@@ -3,12 +3,26 @@
 void GameObjectManager::AddListGameObject(GameObject& gameObject)
 {		
 	//MessageBox(NULL, L"Stack OBJ", L"e", 0);
+
+	if (GetAllGameObjectCounts() > MaxGameObjectCount)
+	{
+#ifdef _DEBUG
+		MessageBox(NULL, L"心配！ゲームオブジェクト多すぎませんか？", L"Debugビルド時専用メッセージ", 0);
+#endif // DEBUG
+	}
+
 	gameObjects.push_back(&gameObject);	
 }
 
 void GameObjectManager::AddCloneGameObject(GameObject& gameObject)
 {
-	//MessageBox(NULL, L"Heap OBJ", L"e", 0);
+	if (GetAllGameObjectCounts() > MaxGameObjectCount)
+	{
+#ifdef _DEBUG
+		MessageBox(NULL, L"心配！クローンやりすぎてないですか？", L"Debugビルド時専用メッセージ", 0);
+#endif // DEBUG
+	}
+
 	clonedGameObjects.push_back(&gameObject);
 }
 

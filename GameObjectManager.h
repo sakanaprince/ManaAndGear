@@ -14,6 +14,13 @@ private:
 	//privateにコンストラクタを置くと他のクラスで　GameObjectManager otherManager;とか出来なくなる
 	GameObjectManager() = default;
 
+	const size_t MaxGameObjectCount{ 255 };
+
+	size_t GetAllGameObjectCounts()
+	{
+		return gameObjects.size() + clonedGameObjects.size();
+	}
+
 public:
 
 	void AddListGameObject(GameObject& gameObject);

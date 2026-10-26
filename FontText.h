@@ -12,10 +12,14 @@ class FontText
 private:
 	ID2D1RenderTarget* _pRenderTarget{nullptr};
 	IDWriteFactory* _writeFactory{nullptr};
-
+	ID2D1SolidColorBrush* pSolidColorBrush;
 	IDWriteTextFormat* _pTextFormat{nullptr};
 
+	float _currentTime{ 0.0f };
+	UINT32 _typewriterAutoCount{0};
+
 public:
+
 	void Init(ID2D1RenderTarget* render)
 	{
 		_pRenderTarget = render;
@@ -31,33 +35,34 @@ public:
 			DWRITE_FONT_WEIGHT_REGULAR,
 			DWRITE_FONT_STYLE_NORMAL,
 			DWRITE_FONT_STRETCH_NORMAL,
-			72.0f,
+			30.0f,
 			L"en-us",
 			&_pTextFormat
 		);
-	}
-
-	void TextDraw(float x, float y, const wchar_t* text)
-	{
-		ID2D1SolidColorBrush* pSolidColorBrush;
-		_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(0, 0, 1.0f, 1.0f), &pSolidColorBrush);
-
-
-	
 
 		HRESULT result = _pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(0, 0, 1.0f, 1.0f), &pSolidColorBrush);
 
 		if (Util::IsNG(result)) { Util::FatalError(L"FontText:solidColorBrush作成失敗"); }
+	}
 
-		D2D1_RECT_F targetRect =
-		{
-			x,y,x + 1000, y + 500
-		};
 
-		if(pSolidColorBrush){ _pRenderTarget->DrawTextW(text, 512, _pTextFormat, targetRect, pSolidColorBrush); }
+	//同名の関数でオーバーロードすれば良い話に見えそうだけど初心者向けなので
+	//ややこしく思わせないために別名で定義
 
-		if (pSolidColorBrush) { pSolidColorBrush->Release(); }
-		
+	void TextDraw(float x, float y, const wchar_t* text, D2D1_COLOR_F cl = { 0.0f,0.0f,1.0f,1.0f });
+
+	void TextDrawTypewriter(float x, float y, const wchar_t* text, D2D1_COLOR_F cl = { 0.0f,0.0f,1.0f,1.0f }, UINT32 typeCount = 1);
+
+	void TextDrawTypewriterAuto(float outputDuration, float deltaTime, float x, float y, const wchar_t* text, D2D1_COLOR_F cl = { 0.0f,0.0f,1.0f,1.0f });
+
+	
+	~FontText()
+	{
+		if (pSolidColorBrush) 
+		{ 
+			pSolidColorBrush->Release();
+			pSolidColorBrush = nullptr;
+		}
 	}
 };
 

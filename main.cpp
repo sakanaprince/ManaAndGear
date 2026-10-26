@@ -47,6 +47,7 @@ World_Update
 		ob->SetActive(true);
 	}
 
-	ManaAndGear::_fontText.TextDraw(30, 30, L"DDD");
-
+	if (_gameInput.GetKey('1')) { ManaAndGear::_fontText.TextDraw(30, 30, L"やぁ！さかなディフェンスです。", D2D1_COLOR_F{ 1,1,1,1 }); }
+	else if (_gameInput.GetKey('2')) { ManaAndGear::_fontText.TextDraw(30, 30, L"やぁ！さかなディフェンスです。", D2D1_COLOR_F{ 0,1,0,1 }); }
+	else if (_gameInput.GetKey('3')) { ManaAndGear::_fontText.TextDraw(30, 30, L"やぁ！さかなディフェンスです。"); }
 }

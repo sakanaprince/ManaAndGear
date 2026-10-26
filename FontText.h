@@ -12,10 +12,11 @@ class FontText
 private:
 	ID2D1RenderTarget* _pRenderTarget{nullptr};
 	IDWriteFactory* _writeFactory{nullptr};
-
+	ID2D1SolidColorBrush* pSolidColorBrush;
 	IDWriteTextFormat* _pTextFormat{nullptr};
 
 public:
+
 	void Init(ID2D1RenderTarget* render)
 	{
 		_pRenderTarget = render;
@@ -31,33 +32,38 @@ public:
 			DWRITE_FONT_WEIGHT_REGULAR,
 			DWRITE_FONT_STYLE_NORMAL,
 			DWRITE_FONT_STRETCH_NORMAL,
-			72.0f,
+			30.0f,
 			L"en-us",
 			&_pTextFormat
 		);
-	}
-
-	void TextDraw(float x, float y, const wchar_t* text)
-	{
-		ID2D1SolidColorBrush* pSolidColorBrush;
-		_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(0, 0, 1.0f, 1.0f), &pSolidColorBrush);
-
-
-	
 
 		HRESULT result = _pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(0, 0, 1.0f, 1.0f), &pSolidColorBrush);
 
 		if (Util::IsNG(result)) { Util::FatalError(L"FontText:solidColorBrush作成失敗"); }
+	}
 
+	void TextDraw(float x, float y, const wchar_t* text, D2D1_COLOR_F cl = {0.0f,0.0f,1.0f,1.0f})
+	{
 		D2D1_RECT_F targetRect =
 		{
 			x,y,x + 1000, y + 500
 		};
 
-		if(pSolidColorBrush){ _pRenderTarget->DrawTextW(text, 512, _pTextFormat, targetRect, pSolidColorBrush); }
+		pSolidColorBrush->SetColor(cl);
 
-		if (pSolidColorBrush) { pSolidColorBrush->Release(); }
-		
+		UINT32 textLength = static_cast<UINT32>(wcslen(text));
+
+		//ここの第二引数いじればタイプライター風に出来る説
+		if(pSolidColorBrush){ _pRenderTarget->DrawTextW(text, textLength, _pTextFormat, targetRect, pSolidColorBrush); }		
+	}
+
+	~FontText()
+	{
+		if (pSolidColorBrush) 
+		{ 
+			pSolidColorBrush->Release();
+			pSolidColorBrush = nullptr;
+		}
 	}
 };
 

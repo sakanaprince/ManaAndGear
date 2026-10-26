@@ -310,9 +310,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
         HRESULT renderResult = pRenderTarget->EndDraw();
         if (IsNG(renderResult)) { FatalError(L"EndDraw失敗"); }
-
-        // 毎フレーム描画
-        //Render();
     }
 
     // 7. リソースの解放(COMReleaseデストラクタで自動で行われる)

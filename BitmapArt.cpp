@@ -105,6 +105,75 @@ void BitmapArt::LoadArtFromSpriteSeat(ArtKeys artKey, LPCWSTR path, int x, int y
 	pBitmapDecoder->Release();
 }
 
+void BitmapArt::LoadSpriteSeat(SpriteSeatKeys seatKey, LPCWSTR path, int frameCountX, int frameCountY, int startX, int startY, int width, int height)
+{
+	//同じキーを上書きしようとしたら警告出す
+	auto it = _SpriteSeatMapEnumType.find(seatKey);
+
+	if (it != _SpriteSeatMapEnumType.end()) { MessageBox(NULL, L"seatKey(ここに番号を入れる)を上書きする！元登録されていたシート画像は消えた。", L"", 0); }
+
+	//安全のためにリストを空にしておく
+	_SpriteSeatMapEnumType[seatKey].spriteFromSeat.clear();
+
+	IWICBitmapDecoder* pBitmapDecoder = nullptr;
+
+	HRESULT createDecoderResult = _pWICImagingFactory->CreateDecoderFromFilename(path, nullptr, GENERIC_READ,
+		WICDecodeMetadataCacheOnLoad, &pBitmapDecoder);
+	if (Util::IsNG(createDecoderResult)) { Util::FatalError(L"BitmapArt:デコードできんかった"); }
+
+	IWICBitmapFrameDecode* pFrameDecode = nullptr;
+
+	HRESULT getFrameResult = pBitmapDecoder->GetFrame(0, &pFrameDecode);
+	if (Util::IsNG(getFrameResult)) { Util::FatalError(L"BitmapArt:フレーム取得出来なかった"); }
+
+	//まずfor文の準備がいるなぁ
+	for (int y = 0; y < frameCountY; y++)
+	{
+		for (int x = 0; x < frameCountX; x++)
+		{
+			WICRect clipRect = { x,y,width,height };
+
+			IWICBitmapClipper* pClipper = nullptr;
+
+			HRESULT createBitmapClipperResult = _pWICImagingFactory->CreateBitmapClipper(&pClipper);
+			if (Util::IsNG(createBitmapClipperResult)) { Util::FatalError(L"BitmapArt:WICFactoryからpClipper作成できんかった"); }
+
+			HRESULT clipperInitialize = pClipper->Initialize(pFrameDecode, &clipRect);
+			if (Util::IsNG(clipperInitialize)) { Util::FatalError(L"クリッパー作成失敗"); }
+
+			//【はぁ】昔の書き方も試して**にしたけど警告が
+			IWICFormatConverter* pFormatConverter = nullptr;
+
+			HRESULT formatConverterResult = _pWICImagingFactory->CreateFormatConverter(&pFormatConverter);
+			if (Util::IsNG(formatConverterResult)) { Util::FatalError(L"コンバーター作成失敗"); }
+
+			//ここの第一引数ぬまった、多分引数は親クラスなので一族ならなんでもokというルールだった
+			//全く同じ型が見つからず困惑してた
+			HRESULT convInitResult = pFormatConverter->Initialize(
+				pClipper,
+				GUID_WICPixelFormat32bppPBGRA,
+				WICBitmapDitherTypeNone, nullptr, 0.0f, WICBitmapPaletteTypeMedianCut);
+			if (Util::IsNG(convInitResult)) { Util::FatalError(L"BitmapArt:FormatConverter初期化失敗"); }
+
+			ID2D1Bitmap *bitmap = nullptr;
+
+			//bitmapに貯めておいて
+			HRESULT bitMapCreateResult = _pRenderTarget->CreateBitmapFromWicBitmap(
+				pFormatConverter, nullptr, &bitmap);
+			if (Util::IsNG(bitMapCreateResult)) { Util::FatalError(L"BitmapArt:bitMap作成失敗"); }
+
+			//ここでvectorに入れる
+			_SpriteSeatMapEnumType[seatKey].spriteFromSeat.push_back(bitmap);
+
+			pFormatConverter->Release();
+			bitmap->Release();
+		}
+	}
+	pFrameDecode->Release();
+	pBitmapDecoder->Release();
+	
+}
+
 void BitmapArt::DrawArt(ArtKeys key, D2D1_POINT_2F _pos)
 {
 	auto it = _pArtMapEnumType.find(key);

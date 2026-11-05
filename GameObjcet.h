@@ -10,6 +10,7 @@ class GameObject
 private:
 	inline static BitmapArt* _pBitmapArt{ nullptr };
 	ArtKeys _art{};
+	SpriteSeatKeys _spriteSeat{};
 	bool _active{ true };
 
 	//ディープコピー とか　あさいコピーとかが存在する

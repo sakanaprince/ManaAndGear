@@ -5,7 +5,19 @@
 #include "ArtKeys.h"
 #include "Transform.h"
 
+#include <vector>
+
 class IWICImagingFactory;
+
+/// <summary>
+/// ‚±‚±‚ÅspriteSeatKey‚Ìn”Ô–Ú‚ÌƒRƒ}‚ğæ“¾‚Á‚Äo—ˆ‚½‚çÅ‚
+/// </summary>
+struct SpriteSeat
+{
+	SpriteSeatKeys spriteSeatKey;
+	std::vector<ID2D1Bitmap*> spriteFromSeat;
+};
+
 
 class BitmapArt
 {
@@ -13,6 +25,7 @@ private:
 	ID2D1RenderTarget* _pRenderTarget {nullptr};
 	IWICImagingFactory* _pWICImagingFactory{ nullptr };
 	std::unordered_map<ArtKeys, ID2D1Bitmap*> _pArtMapEnumType;
+	std::unordered_map<SpriteSeatKeys, SpriteSeat> _SpriteSeatMapEnumType;
 
 public:
 	~BitmapArt() { AllArtRelease(); }
@@ -22,6 +35,9 @@ public:
 	void LoadArt(ArtKeys artKey, LPCWSTR path);
 
 	void LoadArtFromSpriteSeat(ArtKeys artKey, LPCWSTR path, int x, int y, int width, int height);
+
+	void LoadSpriteSeat(SpriteSeatKeys seatKey, LPCWSTR path, int frameCountX, int frameCountY,
+		int startX, int startY, int width, int height);
 
 	void DrawArt(ArtKeys key, D2D1_POINT_2F _pos);
 

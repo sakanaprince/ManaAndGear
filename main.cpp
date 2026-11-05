@@ -21,6 +21,7 @@ World_WakeUp
 	//ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test2.png");
 	ManaAndGear::_bitmapArt.LoadArtFromSpriteSeat(ArtKeys::ArtNumber1, L"./Data/Image/test2.png",10,20,64,64);
 	ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber2, L"./Data/Image/Ammonite.png");
+	ManaAndGear::_bitmapArt.LoadSpriteSeat(SpriteSeatKeys::SpriteSeatNumber1, L"./Data/Image/ghostEnemy.png",4,3,0,0,256,256);
 
 	player.SetArt(ArtKeys::ArtNumber1);
 	bullet.SetArt(ArtKeys::ArtNumber2);
@@ -60,12 +61,13 @@ World_FirstUpdate
 		{
 			if(time > 0.1f)
 			{
-				//これが呼ばれたら次のコマになる
+				//理想：これが呼ばれたら次のコマになる
 				NextSpriteFrame();
+
 				//あー分かった、これ大事なのが「1枚の画像をライブラリ内で区切って読み込めたら」ってことなんだ。
 				//そしたらScratchみたいに「コスチュームのn番目」ってできるよね？
 				//じゃあまず分割ロードから作ります 13:58 
-				//14:18テストの時
+				//14:18テストの時 ->ちょっと修正して成功！
 			}
 		}
 	}

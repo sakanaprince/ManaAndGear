@@ -57,6 +57,8 @@ float timer{ 0.0f };
 UINT32 typewriterCount{ 0 };
 World_SecondUpdate
 {
+
+	return;
 	if (_gameInput.GetKey('1')) { ManaAndGear::UI::fontText.TextDraw(30, 30, L"やぁ！さかなディフェンスです。", D2D1_COLOR_F{ 1,1,1,1 }); }
 	else if (_gameInput.GetKey('2')) { ManaAndGear::UI::fontText.TextDraw(30, 30, L"やぁ！さかなディフェンスです。", D2D1_COLOR_F{ 0,1,0,1 }); }
 	else if (_gameInput.GetKey('3')) { ManaAndGear::UI::fontText.TextDraw(30, 30, L"やぁ！さかなディフェンスです。"); }
@@ -75,8 +77,8 @@ World_SecondUpdate
 	}
 		
 
-	ManaAndGear::UI::fontText.TextDrawTypewriter(60,200,
-		L"ほにゅうびんってなんですか？そう私はよく聞かれるが\nその答えはあざらしが"
-		L"知っていると答える。ではあざらしとは何か？\nそれは私がよく知っていると思う。"
-		L"そう、あざらしとはマジックあざらしである。魔法を使って国を救う正義の存在である。",D2D1_COLOR_F{1,0,0,1},typewriterCount);
+	//ManaAndGear::UI::fontText.TextDrawTypewriter(60,200,
+	//	L"ほにゅうびんってなんですか？そう私はよく聞かれるが\nその答えはあざらしが"
+	//	L"知っていると答える。ではあざらしとは何か？\nそれは私がよく知っていると思う。"
+	//	L"そう、あざらしとはマジックあざらしである。魔法を使って国を救う正義の存在である。",D2D1_COLOR_F{1,0,0,1},typewriterCount);
 }

@@ -41,6 +41,7 @@ void BitmapArt::LoadArt(ArtKeys artKey, LPCWSTR path)
 		pFrameDecode,
 		GUID_WICPixelFormat32bppPBGRA,
 		WICBitmapDitherTypeNone, nullptr, 0.0f, WICBitmapPaletteTypeMedianCut);
+	if (Util::IsNG(convInitResult)) { Util::FatalError(L"BitmapArt:FormatConverter‰Šú‰»Ž¸”s"); }
 	
 	HRESULT bitMapCreateResult = _pRenderTarget->CreateBitmapFromWicBitmap(
 		pFormatConverter, nullptr, &_pArtMapEnumType[artKey]);
@@ -71,6 +72,28 @@ void BitmapArt::DrawArt(ArtKeys key, D2D1_POINT_2F _pos)
 	_pRenderTarget->DrawBitmap(it->second, drawTargetRect, 1.0f);
 }
 
+void BitmapArt::DrawArtSlice(ArtKeys key, D2D1_POINT_2F _pos)
+{
+	auto it = _pArtMapEnumType.find(key);
+
+	if (it == _pArtMapEnumType.end())
+	{
+		MessageBox(NULL, L"ArtŽæ“¾Ž¸”s", L"", 0);
+		return;
+	}
+
+	if (it->second == nullptr) { MessageBox(NULL, L"NULL‚¶‚á‚Ë", L"", 0); }
+
+	D2D1_SIZE_F artSize = it->second->GetSize();
+
+
+	D2D1_RECT_F drawTargetRect = D2D1::RectF(
+		_pos.x, _pos.y, _pos.x + artSize.width, _pos.y + artSize.height);
+
+	_pRenderTarget->DrawBitmap(it->second, drawTargetRect, 1.0f, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR
+		, drawTargetRect);
+}
+
 void BitmapArt::DrawHitBoxBrush(const Transform::Position& leftTop, const Transform::Position& rightBottom) const
 {
 	ID2D1SolidColorBrush* pColorBrush{ nullptr };
@@ -88,8 +111,6 @@ void BitmapArt::DrawHitBoxBrush(const Transform::Position& leftTop, const Transf
 		pColorBrush->Release();
 		pColorBrush = nullptr;
 	}
-
-
 }
 
 D2D1_SIZE_F BitmapArt::GetArtSize(ArtKeys artkey)

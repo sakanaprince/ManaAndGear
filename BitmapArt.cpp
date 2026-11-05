@@ -52,6 +52,59 @@ void BitmapArt::LoadArt(ArtKeys artKey, LPCWSTR path)
 	pBitmapDecoder->Release();
 }
 
+void BitmapArt::LoadArtFromSpriteSeat(ArtKeys artKey, LPCWSTR path, int x, int y, int width, int height)
+{
+	//同じキーを上書きしようとしたら警告出す
+	auto it = _pArtMapEnumType.find(artKey);
+
+	if (it != _pArtMapEnumType.end()) { MessageBox(NULL, L"artKey(ここに番号を入れる)を上書きする！元登録されていた画像は消えた。", L"", 0); }
+
+	IWICBitmapDecoder* pBitmapDecoder = nullptr;
+
+	HRESULT createDecoderResult = _pWICImagingFactory->CreateDecoderFromFilename(path, nullptr, GENERIC_READ,
+		WICDecodeMetadataCacheOnLoad, &pBitmapDecoder);
+	if (Util::IsNG(createDecoderResult)) { Util::FatalError(L"BitmapArt:デコードできんかった"); }
+
+	IWICBitmapFrameDecode* pFrameDecode = nullptr;
+
+	HRESULT getFrameResult = pBitmapDecoder->GetFrame(0, &pFrameDecode);
+	if (Util::IsNG(getFrameResult)) { Util::FatalError(L"BitmapArt:フレーム取得出来なかった"); }
+
+
+	WICRect clipRect = { x,y,width,height };
+
+	IWICBitmapClipper* pClipper = nullptr;
+
+	HRESULT createBitmapClipperResult = _pWICImagingFactory->CreateBitmapClipper(&pClipper);
+	if (Util::IsNG(createBitmapClipperResult)) { Util::FatalError(L"BitmapArt:WICFactoryからpClipper作成できんかった"); }
+
+	HRESULT clipperInitialize = pClipper->Initialize(pFrameDecode, &clipRect);
+	if (Util::IsNG(clipperInitialize)) { Util::FatalError(L"クリッパー作成失敗"); }
+
+	//【はぁ】昔の書き方も試して**にしたけど警告が
+	IWICFormatConverter* pFormatConverter = nullptr;
+
+	HRESULT formatConverterResult = _pWICImagingFactory->CreateFormatConverter(&pFormatConverter);
+	if (Util::IsNG(formatConverterResult)) { Util::FatalError(L"コンバーター作成失敗"); }
+
+
+	//ここの第一引数ぬまった、多分引数は親クラスなので一族ならなんでもokというルールだった
+	//全く同じ型が見つからず困惑してた
+	HRESULT convInitResult = pFormatConverter->Initialize(
+		pClipper,
+		GUID_WICPixelFormat32bppPBGRA,
+		WICBitmapDitherTypeNone, nullptr, 0.0f, WICBitmapPaletteTypeMedianCut);
+	if (Util::IsNG(convInitResult)) { Util::FatalError(L"BitmapArt:FormatConverter初期化失敗"); }
+
+	HRESULT bitMapCreateResult = _pRenderTarget->CreateBitmapFromWicBitmap(
+		pFormatConverter, nullptr, &_pArtMapEnumType[artKey]);
+	if (Util::IsNG(bitMapCreateResult)) { Util::FatalError(L"BitmapArt:bitMap作成失敗"); }
+
+	pFormatConverter->Release();
+	pFrameDecode->Release();
+	pBitmapDecoder->Release();
+}
+
 void BitmapArt::DrawArt(ArtKeys key, D2D1_POINT_2F _pos)
 {
 	auto it = _pArtMapEnumType.find(key);
@@ -72,7 +125,7 @@ void BitmapArt::DrawArt(ArtKeys key, D2D1_POINT_2F _pos)
 	_pRenderTarget->DrawBitmap(it->second, drawTargetRect, 1.0f);
 }
 
-void BitmapArt::DrawArtSlice(ArtKeys key, D2D1_POINT_2F _pos)
+void BitmapArt::DrawArtSlice(ArtKeys key, D2D1_POINT_2F _pos, float x, float y)
 {
 	auto it = _pArtMapEnumType.find(key);
 
@@ -86,9 +139,8 @@ void BitmapArt::DrawArtSlice(ArtKeys key, D2D1_POINT_2F _pos)
 
 	D2D1_SIZE_F artSize = it->second->GetSize();
 
-
 	D2D1_RECT_F drawTargetRect = D2D1::RectF(
-		_pos.x, _pos.y, _pos.x + artSize.width, _pos.y + artSize.height);
+		_pos.x, _pos.y, _pos.x + artSize.width * 0.5f, _pos.y + artSize.height);
 
 	_pRenderTarget->DrawBitmap(it->second, drawTargetRect, 1.0f, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR
 		, drawTargetRect);

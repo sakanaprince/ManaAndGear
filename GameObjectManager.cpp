@@ -3,7 +3,6 @@
 void GameObjectManager::AddListGameObject(GameObject& gameObject)
 {		
 	//MessageBox(NULL, L"Stack OBJ", L"e", 0);
-
 	if (GetAllGameObjectCounts() > MaxGameObjectCount)
 	{
 #ifdef _DEBUG

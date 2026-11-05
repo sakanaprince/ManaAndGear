@@ -66,29 +66,3 @@ void FontText::TextDrawTypewriter(float x, float y, const wchar_t* text, D2D1_CO
 	if (pSolidColorBrush) { _pRenderTarget->DrawTextW(text, drawTextCount, _pTextFormat, targetRect, pSolidColorBrush); }
 
 }
-
-/*
-void FontText::TextDrawTypewriterAuto(float outputDuration, float x, float y, const wchar_t* text, D2D1_COLOR_F cl)
-{
-	float outputRate = static_cast<float>(_pTime->GetNowTime()) / outputDuration;
-
-	UINT32 outputCount = static_cast<UINT32>(outputRate);
-
-
-	D2D1_RECT_F targetRect =
-	{
-		x,y,x + 1000, y + 500
-	};
-
-	pSolidColorBrush->SetColor(cl);
-
-
-	UINT32 textMaxLength = static_cast<UINT32>(wcslen(text));
-	 
-
-	UINT32 drawTextCount = (std::min)(outputCount, textMaxLength);
-
-	//ここの第二引数いじればタイプライター風に出来る説
-	if (pSolidColorBrush) { _pRenderTarget->DrawTextW(text, drawTextCount, _pTextFormat, targetRect, pSolidColorBrush); }
-}
-*/

@@ -18,7 +18,8 @@ float dirY{ 0.0f };
 int typeCount = 0;
 World_WakeUp
 {
-	ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test2.png");
+	//ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test2.png");
+	ManaAndGear::_bitmapArt.LoadArtFromSpriteSeat(ArtKeys::ArtNumber1, L"./Data/Image/test2.png",10,20,64,64);
 	ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber2, L"./Data/Image/Ammonite.png");
 
 	player.SetArt(ArtKeys::ArtNumber1);
@@ -51,6 +52,24 @@ World_FirstUpdate
 	{
 		typeCount++;
 	}
+
+	/*
+	class Player
+	{
+		Update()
+		{
+			if(time > 0.1f)
+			{
+				//これが呼ばれたら次のコマになる
+				NextSpriteFrame();
+				//あー分かった、これ大事なのが「1枚の画像をライブラリ内で区切って読み込めたら」ってことなんだ。
+				//そしたらScratchみたいに「コスチュームのn番目」ってできるよね？
+				//じゃあまず分割ロードから作ります 13:58 
+				//14:18テストの時
+			}
+		}
+	}
+	*/
 }
 
 float timer{ 0.0f };

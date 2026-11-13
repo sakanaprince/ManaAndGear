@@ -10,8 +10,9 @@ class GameObject
 private:
 	inline static BitmapArt* _pBitmapArt{ nullptr };
 	ArtKeys _art{};
+	SpriteSeatKeys _spriteSeat{};
 	bool _active{ true };
-
+	bool _animeMode{ false };
 	//ディープコピー とか　あさいコピーとかが存在する
 	//ディープがしっかりコピー　unity Prefab的な
 	//あさいコピーが参照？的なイメージ　（*EnemySlimeStatusをEnemySlimeが参照する的な、
@@ -20,6 +21,7 @@ private:
 protected:
 
 public:
+	int _animeIndex{ 0 };
 
 	/// <summary>
 	/// 【おねがい】この関数は使わないで！
@@ -46,7 +48,10 @@ public:
 	Transform transform;
 	HitBox hitBox;
 
+
 	void SetArt(ArtKeys artKey) { _art = artKey; }
+
+	void SetSpriteSeat(SpriteSeatKeys spriteSeatKey) { _spriteSeat = spriteSeatKey; }
 
 
 	/// <summary>
@@ -62,7 +67,7 @@ public:
 	/// <param name="artKey"></param>
 	void Draw(ArtKeys artKey) const;
 
-	void Draw()const;
+	void Draw_FromGameObjectManager()const;
 
 	/// <summary>
 	/// ｓ
@@ -86,6 +91,9 @@ public:
 
 	void SetActive(const bool active) { _active = active; }
 	bool const IsActive() const { return _active; }
+	void SetAnimationMode(const bool animeOn) { _animeMode = animeOn; }
+	bool const IsAnimationMode()const { return _animeMode; }
+
 
 	/// <summary>
 	/// 実装してくれてありがとう！

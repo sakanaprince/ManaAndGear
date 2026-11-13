@@ -46,7 +46,7 @@ void GameObject::Draw(ArtKeys artKey) const
 	_pBitmapArt->DrawArt(artKey, transform.position);
 }
 
-void GameObject::Draw() const
+void GameObject::Draw_FromGameObjectManager() const
 {
 	if (_pBitmapArt == nullptr)
 	{
@@ -54,8 +54,15 @@ void GameObject::Draw() const
 		return;
 	}
 
-
-	_pBitmapArt->DrawArt(_art, transform.position);
+	if (_animeMode)
+	{
+		_pBitmapArt->DrawSpriteSeat(_spriteSeat,_animeIndex,transform.position);
+	}
+	else
+	{
+		_pBitmapArt->DrawArt(_art, transform.position);
+	}
+	
 }
 
 void const GameObject::DrawHitBox() const

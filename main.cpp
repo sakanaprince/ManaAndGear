@@ -18,10 +18,15 @@ float dirY{ 0.0f };
 int typeCount = 0;
 World_WakeUp
 {
-	ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test2.png");
+	//ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test2.png");
+	ManaAndGear::_bitmapArt.LoadSingleArtFromSpriteSeat(ArtKeys::ArtNumber1, L"./Data/Image/test2.png",10,20,64,64);
 	ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber2, L"./Data/Image/Ammonite.png");
+	ManaAndGear::_bitmapArt.LoadSpriteSeat(SpriteSeatKeys::SpriteSeatNumber1, L"./Data/Image/ghostEnemy.png",3,1,0,0,256,256);
 
 	player.SetArt(ArtKeys::ArtNumber1);
+	player.SetSpriteSeat(SpriteSeatKeys::SpriteSeatNumber1);
+	player.SetAnimationMode(true);
+
 	bullet.SetArt(ArtKeys::ArtNumber2);
 	bullet.SetActive(false);
 }
@@ -51,6 +56,34 @@ World_FirstUpdate
 	{
 		typeCount++;
 	}
+
+	if (player._animeIndex == _bitmapArt.GetSpriteSeatVectorSize(SpriteSeatKeys::SpriteSeatNumber1) - 1)
+	{
+		player._animeIndex = 0;
+	}
+	else
+	{
+		player._animeIndex++;
+	}
+
+	/*
+	class Player
+	{
+		Update()
+		{
+			if(time > 0.1f)
+			{
+				//理想：これが呼ばれたら次のコマになる
+				NextSpriteFrame();
+
+				//あー分かった、これ大事なのが「1枚の画像をライブラリ内で区切って読み込めたら」ってことなんだ。
+				//そしたらScratchみたいに「コスチュームのn番目」ってできるよね？
+				//じゃあまず分割ロードから作ります 13:58 
+				//14:18テストの時 ->ちょっと修正して成功！
+			}
+		}
+	}
+	*/
 }
 
 float timer{ 0.0f };

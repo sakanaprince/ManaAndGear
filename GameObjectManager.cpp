@@ -3,7 +3,6 @@
 void GameObjectManager::AddListGameObject(GameObject& gameObject)
 {		
 	//MessageBox(NULL, L"Stack OBJ", L"e", 0);
-
 	if (GetAllGameObjectCounts() > MaxGameObjectCount)
 	{
 #ifdef _DEBUG
@@ -49,13 +48,13 @@ void GameObjectManager::Draw()
 	{
 		if(obj->IsActive() == false) { continue; }
 
-		obj->Draw();
+		obj->Draw_FromGameObjectManager();
 	}
 
 	for (auto& obj :clonedGameObjects)
 	{
 		if (obj->IsActive() == false) { continue; }
 
-		obj->Draw();
+		obj->Draw_FromGameObjectManager();
 	}
 }

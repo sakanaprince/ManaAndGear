@@ -52,7 +52,7 @@ void BitmapArt::LoadArt(ArtKeys artKey, LPCWSTR path)
 	pBitmapDecoder->Release();
 }
 
-void BitmapArt::LoadArtFromSpriteSeat(ArtKeys artKey, LPCWSTR path, int x, int y, int width, int height)
+void BitmapArt::LoadSingleArtFromSpriteSeat(ArtKeys artKey, LPCWSTR path, int x, int y, int width, int height)
 {
 	//同じキーを上書きしようとしたら警告出す
 	auto it = _pArtMapEnumType.find(artKey);
@@ -69,7 +69,6 @@ void BitmapArt::LoadArtFromSpriteSeat(ArtKeys artKey, LPCWSTR path, int x, int y
 
 	HRESULT getFrameResult = pBitmapDecoder->GetFrame(0, &pFrameDecode);
 	if (Util::IsNG(getFrameResult)) { Util::FatalError(L"BitmapArt:フレーム取得出来なかった"); }
-
 
 	WICRect clipRect = { x,y,width,height };
 
@@ -113,7 +112,7 @@ void BitmapArt::LoadSpriteSeat(SpriteSeatKeys seatKey, LPCWSTR path, int frameCo
 	if (it != _SpriteSeatMapEnumType.end()) { MessageBox(NULL, L"seatKey(ここに番号を入れる)を上書きする！元登録されていたシート画像は消えた。", L"", 0); }
 
 	//安全のためにリストを空にしておく
-	_SpriteSeatMapEnumType[seatKey].spriteFromSeat.clear();
+	_SpriteSeatMapEnumType[seatKey].spritsVector.clear();
 
 	IWICBitmapDecoder* pBitmapDecoder = nullptr;
 
@@ -131,7 +130,7 @@ void BitmapArt::LoadSpriteSeat(SpriteSeatKeys seatKey, LPCWSTR path, int frameCo
 	{
 		for (int x = 0; x < frameCountX; x++)
 		{
-			WICRect clipRect = { x,y,width,height };
+			WICRect clipRect = { x * width,y * height,width,height };
 
 			IWICBitmapClipper* pClipper = nullptr;
 
@@ -163,15 +162,15 @@ void BitmapArt::LoadSpriteSeat(SpriteSeatKeys seatKey, LPCWSTR path, int frameCo
 			if (Util::IsNG(bitMapCreateResult)) { Util::FatalError(L"BitmapArt:bitMap作成失敗"); }
 
 			//ここでvectorに入れる
-			_SpriteSeatMapEnumType[seatKey].spriteFromSeat.push_back(bitmap);
+			_SpriteSeatMapEnumType[seatKey].spritsVector.push_back(bitmap);
 
 			pFormatConverter->Release();
-			bitmap->Release();
+			//bitmap->Release();
 		}
 	}
+
 	pFrameDecode->Release();
 	pBitmapDecoder->Release();
-	
 }
 
 void BitmapArt::DrawArt(ArtKeys key, D2D1_POINT_2F _pos)
@@ -213,6 +212,39 @@ void BitmapArt::DrawArtSlice(ArtKeys key, D2D1_POINT_2F _pos, float x, float y)
 
 	_pRenderTarget->DrawBitmap(it->second, drawTargetRect, 1.0f, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR
 		, drawTargetRect);
+}
+
+void BitmapArt::DrawSpriteSeat(SpriteSeatKeys key, int idx, D2D1_POINT_2F _pos)
+{
+	auto it = _SpriteSeatMapEnumType.find(key);
+
+	if (it == _SpriteSeatMapEnumType.end())
+	{
+		MessageBox(NULL, L"Art取得失敗", L"", 0);
+		return;
+	}
+
+	if (idx < 0 || it->second.spritsVector.size() <= idx) { return; }
+
+	auto bitmap = it->second.spritsVector[idx];
+
+	if (bitmap == nullptr) 
+	{ 
+		MessageBox(NULL, L"NULLじゃね", L"", 0); 
+		return;
+	}
+
+	if (bitmap != nullptr)
+	{
+		D2D1_SIZE_F artSize = bitmap->GetSize();
+
+		D2D1_RECT_F drawTargetRect = D2D1::RectF(
+			_pos.x, _pos.y, _pos.x + artSize.width, _pos.y + artSize.height);
+
+		_pRenderTarget->DrawBitmap(bitmap, drawTargetRect, 1.0f);
+	}
+
+	//bitmap->Release();
 }
 
 void BitmapArt::DrawHitBoxBrush(const Transform::Position& leftTop, const Transform::Position& rightBottom) const
@@ -261,6 +293,20 @@ void BitmapArt::AllArtRelease()
 			obj.second = nullptr;
 			MessageBox(NULL, L"アート解放した", L"", 1);
 		}
+	}
+
+	for (auto& obj : _SpriteSeatMapEnumType)
+	{
+		for (auto& art : obj.second.spritsVector)
+		{
+			if (art)
+			{
+				art->Release();
+				art = nullptr;
+				MessageBox(NULL, L"スプライトシートからのアート解放した", L"", 1);
+			}
+		}
+		
 	}
 
 	_pArtMapEnumType.clear();

@@ -19,11 +19,14 @@ int typeCount = 0;
 World_WakeUp
 {
 	//ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber1, L"./Data/Image/test2.png");
-	ManaAndGear::_bitmapArt.LoadArtFromSpriteSeat(ArtKeys::ArtNumber1, L"./Data/Image/test2.png",10,20,64,64);
+	ManaAndGear::_bitmapArt.LoadSingleArtFromSpriteSeat(ArtKeys::ArtNumber1, L"./Data/Image/test2.png",10,20,64,64);
 	ManaAndGear::_bitmapArt.LoadArt(ArtKeys::ArtNumber2, L"./Data/Image/Ammonite.png");
-	ManaAndGear::_bitmapArt.LoadSpriteSeat(SpriteSeatKeys::SpriteSeatNumber1, L"./Data/Image/ghostEnemy.png",4,3,0,0,256,256);
+	ManaAndGear::_bitmapArt.LoadSpriteSeat(SpriteSeatKeys::SpriteSeatNumber1, L"./Data/Image/ghostEnemy.png",3,1,0,0,256,256);
 
 	player.SetArt(ArtKeys::ArtNumber1);
+	player.SetSpriteSeat(SpriteSeatKeys::SpriteSeatNumber1);
+	player.SetAnimationMode(true);
+
 	bullet.SetArt(ArtKeys::ArtNumber2);
 	bullet.SetActive(false);
 }
@@ -52,6 +55,15 @@ World_FirstUpdate
 	if (_gameInput.GetKey('T'))
 	{
 		typeCount++;
+	}
+
+	if (player._animeIndex == _bitmapArt.GetSpriteSeatVectorSize(SpriteSeatKeys::SpriteSeatNumber1) - 1)
+	{
+		player._animeIndex = 0;
+	}
+	else
+	{
+		player._animeIndex++;
 	}
 
 	/*

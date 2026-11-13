@@ -48,13 +48,13 @@ void GameObjectManager::Draw()
 	{
 		if(obj->IsActive() == false) { continue; }
 
-		obj->Draw();
+		obj->Draw_FromGameObjectManager();
 	}
 
 	for (auto& obj :clonedGameObjects)
 	{
 		if (obj->IsActive() == false) { continue; }
 
-		obj->Draw();
+		obj->Draw_FromGameObjectManager();
 	}
 }

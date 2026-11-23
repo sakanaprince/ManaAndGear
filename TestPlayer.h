@@ -9,6 +9,7 @@ public:
 
 	void Update() override{}
 
+	float animSpeed{ 1.0f };
 
 	// GameObject ‚ğ‰î‚µ‚ÄŒp³‚³‚ê‚Ü‚µ‚½
 	void OnCloneDelated() override;

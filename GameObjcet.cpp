@@ -19,6 +19,19 @@ GameObject::GameObject(const GameObject& other)
 	GameObjectManager::GetInstance().AddCloneGameObject(*this);
 }
 
+void GameObject::AnimationUpdate(float deltaTime)
+{
+	_animationTimer += _animationSpeed * deltaTime;
+
+	if (_animationTimer >= _animationDuration)
+	{
+		_animationTimer = 0.0f;
+		_animeIndex = (_animeIndex + 1) % _pBitmapArt->GetSpriteSeatVectorSize(_spriteSeat);
+		int a = 0;
+	}
+
+}
+
 void GameObject::Draw(ArtKeys artKey, Transform::Position setPosition) const
 {
 	if (_pBitmapArt == nullptr)
@@ -62,12 +75,15 @@ void GameObject::Draw_FromGameObjectManager() const
 	{
 		_pBitmapArt->DrawArt(_art, transform.position);
 	}
+
+	if (!_isHitBoxDraw) { return; }
 	
+	_pBitmapArt->DrawHitBoxBrush(hitBox.leftTopPosition, hitBox.rightBottomPosition);
 }
 
 void const GameObject::DrawHitBox() const
-{
-	_pBitmapArt->DrawHitBoxBrush(hitBox.leftTopPosition, hitBox.rightBottomPosition);
+{	
+	_pBitmapArt->DrawHitBoxBrush(hitBox.leftTopPosition, hitBox.rightBottomPosition);	
 }
 
 

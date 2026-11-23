@@ -291,7 +291,7 @@ void BitmapArt::AllArtRelease()
 		{
 			obj.second->Release();
 			obj.second = nullptr;
-			MessageBox(NULL, L"アート解放した", L"", 1);
+			//MessageBox(NULL, L"アート解放した", L"", 1);
 		}
 	}
 
@@ -303,7 +303,7 @@ void BitmapArt::AllArtRelease()
 			{
 				art->Release();
 				art = nullptr;
-				MessageBox(NULL, L"スプライトシートからのアート解放した", L"", 1);
+				//MessageBox(NULL, L"スプライトシートからのアート解放した", L"", 1);
 			}
 		}
 		

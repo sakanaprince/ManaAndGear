@@ -13,6 +13,9 @@ private:
 	SpriteSeatKeys _spriteSeat{};
 	bool _active{ true };
 	bool _animeMode{ false };
+
+	float _animationTimer{ 0.0f };
+	float _animationDuration{ 0.1f };
 	//ディープコピー とか　あさいコピーとかが存在する
 	//ディープがしっかりコピー　unity Prefab的な
 	//あさいコピーが参照？的なイメージ　（*EnemySlimeStatusをEnemySlimeが参照する的な、
@@ -21,21 +24,6 @@ private:
 protected:
 
 public:
-	int _animeIndex{ 0 };
-
-	/// <summary>
-	/// 【おねがい】この関数は使わないで！
-	/// </summary>
-	/// <param name="setPBitmapArt">すでに作者が必要な機能をセット済み</param>
-	static void BindBitMapArt(BitmapArt* setPBitmapArt)
-	{
-		if (_pBitmapArt)
-		{
-			MessageBox(NULL, L"BindBitMapArtのBinBitMapArtは使わないで欲しいっていったじゃん！！泣", L"泣いてる", 0);
-			return;
-		}
-		_pBitmapArt = setPBitmapArt;
-	}
 
 
 	GameObject();
@@ -44,9 +32,15 @@ public:
 
 	GameObject(const GameObject& other);
 
-	//直感的に使えるようにあえて,publicにしている
+	//座標や当たり判定など、よく使う変数
+	//これらは初心者の人にとって直感的に使えるように、あえて publicにしている
 	Transform transform;
 	HitBox hitBox;
+	int _animeIndex{ 0 };
+	float _animationSpeed{ 1.0f };
+	bool _isHitBoxDraw{ false };
+
+	void AnimationUpdate(float deltaTime);
 
 
 	void SetArt(ArtKeys artKey) { _art = artKey; }
@@ -70,7 +64,7 @@ public:
 	void Draw_FromGameObjectManager()const;
 
 	/// <summary>
-	/// ｓ
+	/// 当たり判定を描画
 	/// </summary>
 	/// <returns>s</returns>
 	void const DrawHitBox() const;
@@ -89,10 +83,12 @@ public:
 	/// <returns>当たったらtrue、当たらなかったらfalseになります</returns>
 	bool IsHit_BoxBox(HitBox otherHitBox) const;
 
+	//アクセサー(boolはIsにしてます)
 	void SetActive(const bool active) { _active = active; }
 	bool const IsActive() const { return _active; }
 	void SetAnimationMode(const bool animeOn) { _animeMode = animeOn; }
 	bool const IsAnimationMode()const { return _animeMode; }
+	void SetAnimationSpeed(const float speed) { _animationSpeed = speed; }
 
 
 	/// <summary>
@@ -103,5 +99,19 @@ public:
 
 	virtual void Update() = 0;
 	virtual void OnCloneDelated() = 0;
+
+	/// <summary>
+	/// 【おねがい】この関数は使わないで！
+	/// </summary>
+	/// <param name="setPBitmapArt">すでに作者が必要な機能をセット済み</param>
+	static void BindBitMapArt(BitmapArt* setPBitmapArt)
+	{
+		if (_pBitmapArt)
+		{
+			MessageBox(NULL, L"BindBitMapArtのBinBitMapArtは使わないで欲しいっていったじゃん！！泣", L"泣いてる", 0);
+			return;
+		}
+		_pBitmapArt = setPBitmapArt;
+	}
 
 };

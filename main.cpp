@@ -25,10 +25,13 @@ World_WakeUp
 
 	player.SetArt(ArtKeys::ArtNumber1);
 	player.SetSpriteSeat(SpriteSeatKeys::SpriteSeatNumber1);
+	player.SetAnimationSpeed(5.0f);
 	player.SetAnimationMode(true);
+	player._isHitBoxDraw = true;
 
 	bullet.SetArt(ArtKeys::ArtNumber2);
 	bullet.SetActive(false);
+	bullet._isHitBoxDraw = true;
 }
 
 World_Start{}
@@ -57,14 +60,18 @@ World_FirstUpdate
 		typeCount++;
 	}
 
-	if (player._animeIndex == _bitmapArt.GetSpriteSeatVectorSize(SpriteSeatKeys::SpriteSeatNumber1) - 1)
+	player.AnimationUpdate(deltaTime);
+
+	if (_gameInput.GetKey('Q'))
 	{
-		player._animeIndex = 0;
+		player.animSpeed += deltaTime;
 	}
-	else
+	else if (_gameInput.GetKey('E'))
 	{
-		player._animeIndex++;
+		player.animSpeed -= deltaTime;
 	}
+
+	player.SetAnimationSpeed(player.animSpeed);
 
 	/*
 	class Player
@@ -80,6 +87,10 @@ World_FirstUpdate
 				//そしたらScratchみたいに「コスチュームのn番目」ってできるよね？
 				//じゃあまず分割ロードから作ります 13:58 
 				//14:18テストの時 ->ちょっと修正して成功！
+
+				//プレイヤーの動作としてのUpdateとアニメーションとしてのUpdateはライブラリ側で分けた方がいい？
+				//分けたらdeltaTimeとかで制御しやすいかな...理想ではユーザーがある程度制御できるようにしたいんだ
+				//まぁなんでもライブラリ側で行うとむずくなるからほどほどに。具体的には速さ調整くらいは出来るように
 			}
 		}
 	}

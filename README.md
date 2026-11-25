@@ -52,18 +52,22 @@ Microsoftの**Direct2D**を自作関数でラップし、複雑な初期設定�
 ```cpp
 // 例：
 
-void World_WakeUp()
+#include "ManaAndGear.h"
+
+Player player;
+
+World_WakeUp()
  {
     LoadArt(ArtKeys::ArtNumber1, L"player.png");
 }
 
-void World_Start()
+World_Start()
 {
     player.SetArt(ArtKeys::ArtNumber1);
     player.transform.position = {0.0f, 0.0f};
 }
 
-void World_FirstUpdate()
+World_FirstUpdate()
 {
     // キー入力や移動・当たり判定などの処理
     if (_gameInput.GetKey('A')) { dirX = -1.0f; }
@@ -78,7 +82,7 @@ void World_FirstUpdate()
     player.transform.position += {dirX * speed, dirY * speed};
 }
 
-void World_SecondUpdate()
+World_SecondUpdate()
 {
     ManaAndGear::UI::fontText.TextDraw(30, 70, L"遊び方：十字キーで動かします");
 }
